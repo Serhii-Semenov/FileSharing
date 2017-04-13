@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="FSService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IFSService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1">
+        </msb:BinaryEncoding>
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+                </msf:WindowsTransportSecurity>
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256>
+                </sp:Basic256>
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict>
+                </sp:Strict>
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <wsaw:UsingAddressing>
+        </wsaw:UsingAddressing>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import namespace="http://tempuri.org/" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/FSServer.Model" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IFSService_CreateAccount_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateAccount" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_CreateAccount_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateAccountResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_Login_InputMessage">
+    <wsdl:part name="parameters" element="tns:Login" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_Login_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_Logout_InputMessage">
+    <wsdl:part name="parameters" element="tns:Logout" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_Logout_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LogoutResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_GetClientOnline_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientOnline" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_GetClientOnline_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetClientOnlineResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_AddPath_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddPath" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_AddPath_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddPathResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_GetPaths_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPaths" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_GetPaths_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPathsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_GetChat_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetChat" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_GetChat_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetChatResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_SendMessageToChat_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendMessageToChat" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_SendMessageToChat_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendMessageToChatResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_RequestFoDownload_InputMessage">
+    <wsdl:part name="parameters" element="tns:RequestFoDownload" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_RequestFoDownload_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RequestFoDownloadResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_AnswerForRequest_InputMessage">
+    <wsdl:part name="parameters" element="tns:AnswerForRequest" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_AnswerForRequest_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AnswerForRequestResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_UpdateClientList_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UpdateClientList" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_UpdateChat_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:UpdateChat" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_TcpListenerAccept_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:TcpListenerAccept" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_TcpListenerAccept_InputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:TcpListenerAcceptResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_CreateTcpClient_OutputCallbackMessage">
+    <wsdl:part name="parameters" element="tns:CreateTcpClient" />
+  </wsdl:message>
+  <wsdl:portType msc:usingSession="true" name="IFSService">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CreateAccount">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/CreateAccount" message="tns:IFSService_CreateAccount_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/CreateAccountResponse" message="tns:IFSService_CreateAccount_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Login">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/Login" message="tns:IFSService_Login_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/LoginResponse" message="tns:IFSService_Login_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Logout">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/Logout" message="tns:IFSService_Logout_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/LogoutResponse" message="tns:IFSService_Logout_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetClientOnline">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/GetClientOnline" message="tns:IFSService_GetClientOnline_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/GetClientOnlineResponse" message="tns:IFSService_GetClientOnline_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddPath">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/AddPath" message="tns:IFSService_AddPath_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/AddPathResponse" message="tns:IFSService_AddPath_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetPaths">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/GetPaths" message="tns:IFSService_GetPaths_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/GetPathsResponse" message="tns:IFSService_GetPaths_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetChat">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/GetChat" message="tns:IFSService_GetChat_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/GetChatResponse" message="tns:IFSService_GetChat_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="SendMessageToChat">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/SendMessageToChat" message="tns:IFSService_SendMessageToChat_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/SendMessageToChatResponse" message="tns:IFSService_SendMessageToChat_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="RequestFoDownload">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/RequestFoDownload" message="tns:IFSService_RequestFoDownload_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/RequestFoDownloadResponse" message="tns:IFSService_RequestFoDownload_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AnswerForRequest">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/AnswerForRequest" message="tns:IFSService_AnswerForRequest_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/AnswerForRequestResponse" message="tns:IFSService_AnswerForRequest_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateClientList">
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/UpdateClientList" message="tns:IFSService_UpdateClientList_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateChat">
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/UpdateChat" message="tns:IFSService_UpdateChat_OutputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="TcpListenerAccept">
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/TcpListenerAccept" message="tns:IFSService_TcpListenerAccept_OutputCallbackMessage" />
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/TcpListenerAcceptResponse" message="tns:IFSService_TcpListenerAccept_InputCallbackMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="CreateTcpClient">
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/CreateTcpClient" message="tns:IFSService_CreateTcpClient_OutputCallbackMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NetTcpBinding_IFSService" type="tns:IFSService">
+    <wsp:PolicyReference URI="#NetTcpBinding_IFSService_policy">
+    </wsp:PolicyReference>
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="CreateAccount">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/CreateAccount" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Logout">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/Logout" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetClientOnline">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/GetClientOnline" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPath">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/AddPath" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPaths">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/GetPaths" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetChat">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/GetChat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendMessageToChat">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/SendMessageToChat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RequestFoDownload">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/RequestFoDownload" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AnswerForRequest">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/AnswerForRequest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateClientList">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/UpdateClientList" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateChat">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/UpdateChat" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TcpListenerAccept">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/TcpListenerAccept" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateTcpClient">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/CreateTcpClient" style="document" />
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FSService">
+    <wsdl:port name="NetTcpBinding_IFSService" binding="tns:NetTcpBinding_IFSService">
+      <soap12:address location="net.tcp://localhost:42042/FSServer/ServiceFS/" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:42042/FSServer/ServiceFS/</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Upn>Xeon\Base</Upn>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

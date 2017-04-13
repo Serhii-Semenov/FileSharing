@@ -1,0 +1,98 @@
+﻿-- phpMyAdmin SQL Dump
+-- version 3.5.1
+-- http://www.phpmyadmin.net
+--
+-- Хост: 127.0.0.1
+-- Время создания: Мар 13 2017 г., 17:29
+-- Версия сервера: 5.5.25
+-- Версия PHP: 5.3.13
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- База данных: `dbfilesharing`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `clients`
+--
+
+CREATE TABLE IF NOT EXISTS `clients` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `login` varchar(25) NOT NULL,
+  `password` varchar(25) NOT NULL,
+  `mail` varchar(42) DEFAULT NULL,
+  `online` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login` (`login`),
+  UNIQUE KEY `login_2` (`login`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
+
+--
+-- Дамп данных таблицы `clients`
+--
+
+INSERT INTO `clients` (`id`, `login`, `password`, `mail`, `online`) VALUES
+(11, 'a', 'a', 'a@a', 0),
+(12, 'b', 'b', 'b@b', 0),
+(13, 'c', 'c', 'c', 0),
+(14, 's', 's', 's', 0),
+(15, 'Qwerty', 'q', 'qw@qw', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `filepath`
+--
+
+CREATE TABLE IF NOT EXISTS `filepath` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client` int(11) NOT NULL,
+  `path` varchar(250) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+
+--
+-- Дамп данных таблицы `filepath`
+--
+
+INSERT INTO `filepath` (`id`, `client`, `path`) VALUES
+(11, 11, 'C:UsersBaseDocumentsStarCraft IIGameLogs2017-01-09 17.52.35 Graphics.txt'),
+(12, 11, 'C:UsersBaseDocumentsStarCraft IIGameLogsSystemInfo.txt'),
+(13, 12, 'C:UsersBaseDocumentsStarCraft IIGameLogs2017-01-09 17.52.35 Graphics.txt'),
+(14, 13, 'C:UsersBaseDocumentsStarCraft IIGameLogs2017-01-08 20.16.58 Graphics.txt'),
+(15, 11, 'C:UsersBaseDocumentsStarCraft IIAccounts1159703042-S2-2-183741SavesLibertyCampaignSave.SC2Save'),
+(16, 11, 'C:UsersBaseDocumentsStarCraft IIAccounts1159703042-S2-2-183741SavesVoidProloguePublishArchive.SC2Save');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `fschat`
+--
+
+CREATE TABLE IF NOT EXISTS `fschat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(250) NOT NULL,
+  `client` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+
+--
+-- Дамп данных таблицы `fschat`
+--
+
+INSERT INTO `fschat` (`id`, `message`, `client`) VALUES
+(13, 'Hi', 12);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
