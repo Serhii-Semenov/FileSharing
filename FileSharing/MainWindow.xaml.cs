@@ -16,6 +16,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Net;
 using Logger;
 
+
 namespace FileSharing
 {
     public partial class MainWindow : Window
@@ -33,16 +34,15 @@ namespace FileSharing
 
             Init();
 
-            Log = WPFLogger.Instance;
-            WPFLogger.Instance.Initialize((ListBox)lbxLOG);
-
-            Log.Debug("W WW WWW WWWW WWWWW");
-
         }
 
         private void Init()
         {
             ToLoginView();
+
+            // Initialize Logger
+            Log = WPFLogger.Instance;
+            WPFLogger.Instance.Initialize((ListBox)lbxLOG);
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

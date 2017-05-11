@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="067c258b-c01c-499d-874f-6d02f8df7740" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a644d9cf-4bb2-4b19-b772-7a5456cde91e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -19,14 +19,14 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="net.tcp://localhost:42042/FSServer/ServiceFS/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="net.tcp://10.6.0.138:2017/WCFGameServer/Service1/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="d22c805a-9945-4c0d-b981-148043fcedc7" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="4282732c-7278-436e-b0a3-fc66702c278c" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="7f6d9f89-6bea-42db-87aa-f9ddf0e471de" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="FSServer.Model.xsd" MetadataType="Schema" ID="f6fd8d6f-f304-4905-8e16-4a3fb87a85ae" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="7a149a50-9fdb-492e-ad25-a1b798d6fd9a" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="105560e6-c681-4fea-b0bb-923faa1059dd" SourceId="1" SourceUrl="net.tcp://10.6.0.138:2017/WCFGameServer/Service1/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="dbe371f8-a397-43d8-87f7-a0932d76da48" SourceId="1" SourceUrl="net.tcp://10.6.0.138:2017/WCFGameServer/Service1/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="4df62c5f-8fbd-4ee0-a677-c10f7722cabd" SourceId="1" SourceUrl="net.tcp://10.6.0.138:2017/WCFGameServer/Service1/mex" />
+    <MetadataFile FileName="FSServer.Model.xsd" MetadataType="Schema" ID="7a5e4f14-dbf8-405b-9bc7-d752cf39fdd0" SourceId="1" SourceUrl="net.tcp://10.6.0.138:2017/WCFGameServer/Service1/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="804c1502-ff5a-4f82-8610-4affa72b722c" SourceId="1" SourceUrl="net.tcp://10.6.0.138:2017/WCFGameServer/Service1/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

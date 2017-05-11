@@ -19,29 +19,15 @@ namespace Logger
             this.objName = objName;
         }
 
-        //public void Debug(string message) { throw new NotImplementedException(); }
+        public void Debug(string message) { objName.Items.Add("DEBUG : " + message); }
 
-        public void Error(string message) { throw new NotImplementedException(); }
+        public void Error(string message) { objName.Items.Add("ERROR : " + message); }
 
-        public void Fatal(string message) { throw new NotImplementedException(); }
+        public void Fatal(string message) { objName.Items.Add("FATAL : " + message); }
 
-        public void Info(string message) { throw new NotImplementedException(); }
+        public void Info(string message) { objName.Items.Add("INFO : " + message); }
 
-        public void Warrning(string message) { throw new NotImplementedException(); }
+        public void Warrning(string message) { objName.Items.Add("WARRNING : " + message); }
 
-        public void Debug(string message)
-        {
-            try
-            {
-                //var v = (ICollection<string>)objName;
-                //v.Add(message);
-                //ListBox v = (ListBox)objName;
-                objName.Items.Add(message);
-            }
-            catch ( Exception exp)
-            {
-                throw new Exception(exp.Message);
-            }
-        }
     }
 }
