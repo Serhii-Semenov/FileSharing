@@ -14,5 +14,12 @@ namespace FSServer.Model
         [DataMember]
         public string Path { get; set; }
 
+        //
+        // [DataMember]
+        // public int FileSize { get; set; }
+        //
+        // [DataMember]
+        // public int FileSizeReceived { get; set; }
+
     }
 }

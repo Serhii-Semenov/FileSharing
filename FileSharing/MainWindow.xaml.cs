@@ -243,9 +243,11 @@ namespace FileSharing
                 BinaryReader br = new BinaryReader(fs);
                 long k = fs.Length;//Размер файла.
                 format.Serialize(writerStream, k.ToString());//Вначале передаём размер
+                // seek поставить в нужную позицию 
                 while ((count = br.Read(buf, 0, 1024)) > 0)
                 {
                     format.Serialize(writerStream, buf);//А теперь в цикле по 1024 байта передаём файл
+
                 }
             }
             catch (Exception err)
@@ -265,7 +267,8 @@ namespace FileSharing
             // **********
 
             service.AnswerForRequest(ip, clientt.recipient.Id);
-            lbxLOG.Items.Add("TCP Listener Accept Start! " + ip + " - " + clientt.recipient.ClientName);
+            //lbxLOG.Items.Add("TCP Listener Accept Start! " + ip + " - " + clientt.recipient.ClientName);
+            Log.Info("TCP Listener Accept Start! " + ip + " - " + clientt.recipient.ClientName);
 
 
             //
@@ -306,15 +309,18 @@ namespace FileSharing
             NetworkStream readerStream = client.GetStream();
             BinaryFormatter outformat = new BinaryFormatter();
             FileStream fs = new FileStream(filename, FileMode.OpenOrCreate);
+            // при дозаписи -> new FileStream(filename, FileMode.Append);
             BinaryWriter bw = new BinaryWriter(fs);
             int count;
-            count = int.Parse(outformat.Deserialize(readerStream).ToString());//Получаем размер файла
+            count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
             int i = 0;
             for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
             {
 
                 byte[] buf = (byte[])(outformat.Deserialize(readerStream));//Собственно читаем из потока и записываем в файл
                 bw.Write(buf);
+                // добавить переменную сколько из потока записалось
+                // 
             }
             bw.Close();
             fs.Close();
