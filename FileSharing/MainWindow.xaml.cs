@@ -34,7 +34,7 @@ namespace FileSharing
             Init();
 
             Log = WPFLogger.Instance;
-            WPFLogger.Instance.Initialize((object)lbxLOG);
+            WPFLogger.Instance.Initialize((ListBox)lbxLOG);
 
             Log.Debug("W WW WWW WWWW WWWWW");
 

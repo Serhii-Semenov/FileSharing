@@ -11,10 +11,10 @@ namespace Logger
     {
         public static WPFLogger Instance { get { return instance; } }
         private static readonly WPFLogger instance = new WPFLogger();
-        private object objName;
+        private ListBox objName;
         private WPFLogger() { }
 
-        public void Initialize(object objName)
+        public void Initialize(ListBox objName)
         {
             this.objName = objName;
         }
@@ -35,8 +35,8 @@ namespace Logger
             {
                 //var v = (ICollection<string>)objName;
                 //v.Add(message);
-                var v = (ListBox)objName;
-                v.Items.Add(message);
+                //ListBox v = (ListBox)objName;
+                objName.Items.Add(message);
             }
             catch ( Exception exp)
             {
