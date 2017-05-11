@@ -1,29 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 
 using FileSharing.FSService;
 using System.ServiceModel;
 using FileSharing.Logic;
 using Microsoft.Win32;
-using FileSharing.tcp;
 using System.Threading;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.ComponentModel;
 using System.Net;
+using Logger;
 
 namespace FileSharing
 {
@@ -34,12 +25,18 @@ namespace FileSharing
         int id = 0;
         string name = "";
         FSServiceClient service;
+        ILogger Log;
 
         public MainWindow()
         {
             InitializeComponent();
 
             Init();
+
+            Log = WPFLogger.Instance;
+            WPFLogger.Instance.Initialize((object)lbxLOG);
+
+            Log.Debug("W WW WWW WWWW WWWWW");
 
         }
 

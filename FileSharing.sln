@@ -10,6 +10,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing", "FileSharing\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSServer", "FSServer\FSServer.csproj", "{F633CF84-F440-4EFC-A206-99FEE5BA3EE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{F42C6B1A-C6FF-487B-89F6-FF2287B7877D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{A5F2430F-27FE-4233-8AF7-BCC3D12148A6}"
+	ProjectSection(SolutionItems) = preProject
+		Documents\КР_Semenov-.Net Framework.doc = Documents\КР_Semenov-.Net Framework.doc
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +31,10 @@ Global
 		{F633CF84-F440-4EFC-A206-99FEE5BA3EE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F633CF84-F440-4EFC-A206-99FEE5BA3EE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F633CF84-F440-4EFC-A206-99FEE5BA3EE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F42C6B1A-C6FF-487B-89F6-FF2287B7877D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F42C6B1A-C6FF-487B-89F6-FF2287B7877D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F42C6B1A-C6FF-487B-89F6-FF2287B7877D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F42C6B1A-C6FF-487B-89F6-FF2287B7877D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

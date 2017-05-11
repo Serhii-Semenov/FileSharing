@@ -63,13 +63,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="tcp\Class1.cs" />
-    <Compile Include="tcp\DataToSend.cs" />
-    <Compile Include="tcp\global.cs" />
     <Compile Include="Logic\ClientCallback.cs" />
     <Compile Include="Logic\ClientRoomCore.cs" />
     <Compile Include="Logic\ClientStatus.cs" />
-    <Compile Include="tcp\tcpmodule.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -130,9 +126,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="tcp\TextFile1.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadataStorage Include="Service References\FSService\" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +139,12 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{f42c6b1a-c6ff-487b-89f6-ff2287b7877d}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
