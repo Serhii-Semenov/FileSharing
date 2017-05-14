@@ -105,6 +105,9 @@
     <None Include="Service References\FSService\Arrays.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\FSService\FileSharing.FSService.ClientContract.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\FSService\FileSharing.FSService.ClientList.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

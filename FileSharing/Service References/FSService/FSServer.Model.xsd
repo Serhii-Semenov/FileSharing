@@ -17,9 +17,18 @@
   <xs:complexType name="ClientContract">
     <xs:sequence>
       <xs:element minOccurs="0" name="Path" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="complite" type="xs:int" />
       <xs:element minOccurs="0" name="recipient" nillable="true" type="tns:Client" />
       <xs:element minOccurs="0" name="sender" nillable="true" type="tns:Client" />
+      <xs:element minOccurs="0" name="size" type="xs:int" />
+      <xs:element minOccurs="0" name="sizecomplite" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ClientContract" nillable="true" type="tns:ClientContract" />
+  <xs:complexType name="ArrayOfClientContract">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ClientContract" nillable="true" type="tns:ClientContract" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfClientContract" nillable="true" type="tns:ArrayOfClientContract" />
 </xs:schema>

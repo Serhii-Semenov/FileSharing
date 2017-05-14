@@ -92,6 +92,34 @@ namespace FSServer.Privider
             return b;
         }
 
+        public List<ClientContract> GetListForDownload(string _name)
+        {
+            List<ClientContract> cl = new List<ClientContract>();
+            ClientContract cc = new Model.ClientContract();
+            int id = GetIdByName(_name);
+
+            using (var con = Connect())
+            {
+                string myQuery = string.Format("SELECT `sender`, `recipient`, `filepath`, `sizecomplite`, `size`, `complite` FROM `filefordownload` WHERE `recipient`= {0} ", id);
+                var cmd = new MySqlCommand(myQuery, con);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cc.sender.Id = int.Parse(reader["sender"].ToString());
+                        cc.recipient.Id = int.Parse(reader["recipient"].ToString());
+                        cc.Path = reader["filepath"].ToString();
+                        cc.sizecomplite = int.Parse(reader["sizecomplite"].ToString());
+                        cc.size = int.Parse(reader["size"].ToString());
+                        cc.complite = int.Parse(reader["recipient"].ToString());
+
+                        cl.Add(cc);
+                    }
+                    return cl;
+                }
+            }
+        }
+
 
         public int GetIdByName(string _name)
         {

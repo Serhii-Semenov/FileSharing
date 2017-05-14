@@ -22,6 +22,7 @@ namespace FileSharing
     public partial class MainWindow : Window
     {
         ClientContract staff;
+        List<ClientContract> forDownLoad;
 
         int id = 0;
         string name = "";
@@ -43,6 +44,22 @@ namespace FileSharing
             // Initialize Logger
             Log = WPFLogger.Instance;
             WPFLogger.Instance.Initialize((ListBox)lbxLOG);
+
+            // Init List<ClientContract> forDownLoad;
+            // InitForDownload();
+        }
+
+        private void InitForDownload()
+        {
+            try
+            {
+                forDownLoad = new List<ClientContract>(service.GetListForDownload(name));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

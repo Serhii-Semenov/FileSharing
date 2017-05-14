@@ -101,6 +101,12 @@
   <wsdl:message name="IFSService_AnswerForRequest_OutputMessage">
     <wsdl:part name="parameters" element="tns:AnswerForRequestResponse" />
   </wsdl:message>
+  <wsdl:message name="IFSService_GetListForDownload_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetListForDownload" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_GetListForDownload_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetListForDownloadResponse" />
+  </wsdl:message>
   <wsdl:message name="IFSService_UpdateClientList_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:UpdateClientList" />
   </wsdl:message>
@@ -156,6 +162,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AnswerForRequest">
       <wsdl:input wsaw:Action="http://tempuri.org/IFSService/AnswerForRequest" message="tns:IFSService_AnswerForRequest_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFSService/AnswerForRequestResponse" message="tns:IFSService_AnswerForRequest_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetListForDownload">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/GetListForDownload" message="tns:IFSService_GetListForDownload_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/GetListForDownloadResponse" message="tns:IFSService_GetListForDownload_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateClientList">
       <wsdl:output wsaw:Action="http://tempuri.org/IFSService/UpdateClientList" message="tns:IFSService_UpdateClientList_OutputCallbackMessage" />
@@ -258,6 +268,15 @@
     </wsdl:operation>
     <wsdl:operation name="AnswerForRequest">
       <soap12:operation soapAction="http://tempuri.org/IFSService/AnswerForRequest" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetListForDownload">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/GetListForDownload" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

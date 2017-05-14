@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:FileSharing"
         mc:Ignorable="d"
         Title="File Sharing" Height="500" Width="500">
-    <StackPanel>
+    <StackPanel Margin="0,0,0,-303">
         <Expander IsExpanded="True" Margin="5" Padding="5" Header="Authorization" BorderBrush="BurlyWood" BorderThickness="1" Name="exAuth">
             <StackPanel>
                 <WrapPanel>
@@ -32,30 +32,42 @@
         </Expander>
         <WrapPanel>
             <StackPanel>
-                <ListBox x:Name="lbxClients" HorizontalAlignment="Left" Height="197" Margin="5
-                 ,0,0,0" Width="130" SelectionChanged="lbxClients_SelectionChanged"/>
+                <ListBox x:Name="lbxClients" HorizontalAlignment="Left" Height="197" Margin="5                  ,0,0,0" Width="130" SelectionChanged="lbxClients_SelectionChanged"/>
                 <Button x:Name="btnDisconnect" Content="Disconnect" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="75" Click="btnDisconnect_Click" />
             </StackPanel>
             <StackPanel>
-                <ListBox x:Name="lbxChat" HorizontalAlignment="Left" Height="165" Margin="5
-                 ,0,0,0" Width="130"/>
-                <TextBox x:Name="tbChat" Margin="5"></TextBox>
-                <Button x:Name="btnChat" Content="Send" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="75" Click="btnChat_Click" />
+
             </StackPanel>
             <StackPanel>
-                <ListBox x:Name="lbxPaths" HorizontalAlignment="Left" Height="197" Margin="5
-                 ,0,0,0" Width="160"/>
+                <ListBox x:Name="lbxPaths" HorizontalAlignment="Left" Height="197" Margin="5                  ,0,0,0" Width="340"/>
                 <WrapPanel>
                     <Button x:Name="btnDownload" Content="Download" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="75" Click="btnDownload_Click" />
                     <Button x:Name="btnUpload" Content="Upaload" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="75" Click="btnUpload_Click" />
                 </WrapPanel>
             </StackPanel>
         </WrapPanel>
-        <WrapPanel>
-            <ListBox x:Name="lbxLOG" HorizontalAlignment="Left" Height="172" Width="345" Margin="5,5,0,5"></ListBox>
-            <!--<StackPanel>
-                <TextBox x:Name="tbIp" Margin="5" Width="100" Text="127.0.0.0"/>
-            </StackPanel>-->
-        </WrapPanel>
+
+        <Expander IsExpanded="False" Margin="5" Padding="5" Header="Downloading" BorderBrush="BurlyWood" BorderThickness="1" Name="exDownloading">
+            <StackPanel>
+                <ListBox x:Name="lbxDownloading" HorizontalAlignment="Left" Height="172" Width="464" Margin="5,5,0,5"></ListBox>
+            </StackPanel>
+        </Expander>
+
+        <Expander IsExpanded="False" Margin="5" Padding="5" Header="Chatting" BorderBrush="BurlyWood" BorderThickness="1" Name="exChat">
+            <StackPanel>
+                <ListBox x:Name="lbxChat" HorizontalAlignment="Left" Height="125" Margin="5,0,0,0" Width="450"/>
+                <WrapPanel>
+                    <TextBox x:Name="tbChat" Margin="5" Width="369"/>
+                    <Button x:Name="btnChat" Content="Send" HorizontalAlignment="Left" Margin="5,5,0,5" VerticalAlignment="Top" Width="75" Click="btnChat_Click" />
+                </WrapPanel>
+            </StackPanel>
+        </Expander>
+
+        <Expander IsExpanded="False" Margin="5" Padding="5" Header="Logging" BorderBrush="BurlyWood" BorderThickness="1" Name="exLogListBox">
+            <StackPanel>
+                <ListBox x:Name="lbxLOG" HorizontalAlignment="Left" Height="172" Width="464" Margin="5,5,0,5"></ListBox>
+            </StackPanel>
+        </Expander>
+
     </StackPanel>
 </Window>

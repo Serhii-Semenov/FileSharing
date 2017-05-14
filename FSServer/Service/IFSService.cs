@@ -48,5 +48,8 @@ namespace FSServer.Service
 
         [OperationContract]
         void AnswerForRequest(string ip, int _id);
+
+        [OperationContract]
+        List<ClientContract> GetListForDownload(string _name);
     }
 }

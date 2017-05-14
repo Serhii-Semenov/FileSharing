@@ -140,6 +140,12 @@ namespace FSServer.Service
             return prov.GetChat();
         }
 
+        public List<ClientContract> GetListForDownload(string _name)
+        {
+            var prov = new Provider();
+            return prov.GetListForDownload(_name);
+        }
+
         public void SendMessageToChat(int _id, string _message)
         {
             var prov = new Provider();
