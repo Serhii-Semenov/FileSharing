@@ -21,7 +21,7 @@ namespace FileSharing
 {
     public partial class MainWindow : Window
     {
-        ClientContract staff;
+        ClientContract staff = null;
         List<ClientContract> forDownLoad;
 
         int id = 0;
@@ -62,7 +62,7 @@ namespace FileSharing
                     wp.Tag = i;
 
                     Label lblClient = new Label() { Content = v.recipient.ClientName};
-                    lblClient.Width = 150;
+                    lblClient.Width = 40;
                     lblClient.BorderThickness = new Thickness(1);
                     lblClient.Margin = new Thickness(5);
                     wp.Children.Add(lblClient);
@@ -75,7 +75,7 @@ namespace FileSharing
 
                     ProgressBar pbComplite = new ProgressBar()
                     {
-                        Width = 200,
+                        Width = 100,
                         Minimum = 0,
                         Maximum = 100,
                         Value = v.complite
@@ -84,6 +84,7 @@ namespace FileSharing
 
                     Button btnResume = new Button()
                     {
+                        Width = 70,
                         Content = "Resume file",
                         Margin = new Thickness(5),
                         Tag = i
@@ -95,6 +96,7 @@ namespace FileSharing
                     i++;
                     lbxDownloading.Items.Add(wp);
                 }
+                if (forDownLoad.Count > 0) exDownloading.IsExpanded = true;
             }
             catch (Exception ex)
             {
@@ -231,6 +233,9 @@ namespace FileSharing
                 ClientRoomCore.Status = ClientStatus.Online;
                 GetPlayers();
                 UpdateChat();
+
+                // Initialize List<ClientContract> forDownLoad;
+                InitForDownload();
             }
             catch (Exception err)
             {
@@ -295,10 +300,11 @@ namespace FileSharing
                 return;
             }
 
-            int seekBuf = 0;
+            long seekBuf = 0;
 
             FileStream fs = null;
             BinaryReader br = null;
+            long k = 0;
             try
             {
                 TcpClient eclient = new TcpClient();
@@ -309,7 +315,8 @@ namespace FileSharing
                 int count;
                 fs = new FileStream(staff.Path, FileMode.Open);
                 br = new BinaryReader(fs);
-                long k = fs.Length;//Размер файла.
+                k = fs.Length;//Размер файла
+
                 format.Serialize(writerStream, k.ToString());//Вначале передаём размер
                 // seek поставить в нужную позицию 
                 while ((count = br.Read(buf, 0, 1024)) > 0)
@@ -322,10 +329,18 @@ namespace FileSharing
             {
                 // ошибка при передачи файла в поток
                 MessageBox.Show(err.Message, seekBuf.ToString());
-                throw;
+                // throw;
             }
             finally
             {
+                staff.sizecomplite = seekBuf; // записанно буферов по 1024
+                staff.size = k;
+                staff.complite = (int) (seekBuf * 1024 / (k / (100))); 
+
+                // TODO
+                // UPDATE filefordownload 
+                service.UpdateFileForDownload(staff);
+
                 br.Close();
                 fs.Close();
             }
@@ -341,13 +356,8 @@ namespace FileSharing
             // **********
 
             service.AnswerForRequest(ip, clientt.recipient.Id);
-            //lbxLOG.Items.Add("TCP Listener Accept Start! " + ip + " - " + clientt.recipient.ClientName);
             Log.Info("TCP Listener Accept Start! " + ip + " - " + clientt.recipient.ClientName);
 
-
-            //
-            // TODO
-            // ...
             string[] ipport = ip.Split(':');
 
             int port;
@@ -395,7 +405,6 @@ namespace FileSharing
                 count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
                 for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
                 {
-
                     byte[] buf = (byte[])(outformat.Deserialize(readerStream));//Собственно читаем из потока и записываем в файл
                     bw.Write(buf);
                     // добавить переменную сколько из потока записалось
@@ -529,7 +538,7 @@ namespace FileSharing
         {
             // TODO
             // callback init question to download
-            // ***
+            // 
 
             string username = lbxClients.SelectedItem.ToString();
             string path = lbxPaths.SelectedItem.ToString();
@@ -538,7 +547,22 @@ namespace FileSharing
             lbxLOG.Items.Add("Файл path - " + lbxPaths.SelectedItem);
 
             var client = ClientRoomCore.Clients.Clients.FirstOrDefault(c => c.Value.ClientName == username);
-            staff = new ClientContract() { sender = client.Value, recipient = new Client() { Id = id, ClientName = name }, Path = path };
+            staff = new ClientContract()
+            {
+                sender = client.Value,
+                recipient = new Client()
+                {
+                    Id = id,
+                    ClientName = name
+                },
+                Path = path,
+                sizecomplite = 0,
+                size = 0,
+                complite = 0
+            };
+
+            // Add staff to DB
+            staff.id = service.AddFileToDownloadTable(staff);
 
             // RequestForDownload
             service.RequestFoDownload(staff);

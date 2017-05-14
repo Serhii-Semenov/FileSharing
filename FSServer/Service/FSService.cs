@@ -146,6 +146,18 @@ namespace FSServer.Service
             return prov.GetListForDownload(_name);
         }
 
+        public int AddFileToDownloadTable(ClientContract cl)
+        {
+            var prov = new Provider();
+            return prov.AddFileToDownloadTable(cl);
+        }
+
+        public void UpdateFileForDownload(ClientContract cl)
+        {
+            var prov = new Provider();
+            prov.UpdateFileForDownload(cl);
+        }
+
         public void SendMessageToChat(int _id, string _message)
         {
             var prov = new Provider();

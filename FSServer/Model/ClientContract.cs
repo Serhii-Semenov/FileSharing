@@ -6,7 +6,10 @@ namespace FSServer.Model
     public class ClientContract 
     {
         [DataMember]
-        public Client sender { get; set; } // was user
+        public int id { get; set; }
+
+        [DataMember]
+        public Client sender { get; set; } 
 
         [DataMember]
         public Client recipient { get; set; }
@@ -15,10 +18,10 @@ namespace FSServer.Model
         public string Path { get; set; }
 
         [DataMember]
-        public int size { get; set; }
+        public long size { get; set; }
 
         [DataMember]
-        public int sizecomplite { get; set; }
+        public long sizecomplite { get; set; }
 
         [DataMember]
         public int complite { get; set; }

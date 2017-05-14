@@ -150,24 +150,50 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:element name="AddFileToDownloadTable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q6:ClientContract" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddFileToDownloadTableResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="AddFileToDownloadTableResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateFileForDownload">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q7:ClientContract" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateFileForDownloadResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
   <xs:element name="UpdateClientList">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="clients" nillable="true" type="q6:ClientList" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="clients" nillable="true" type="q8:ClientList" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="UpdateChat">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="clients" nillable="true" type="q7:ClientList" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="clients" nillable="true" type="q9:ClientList" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="TcpListenerAccept">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q8:ClientContract" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q10:ClientContract" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

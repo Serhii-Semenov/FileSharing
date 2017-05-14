@@ -95,7 +95,7 @@ namespace FSServer.Privider
         public List<ClientContract> GetListForDownload(string _name)
         {
             List<ClientContract> cl = new List<ClientContract>();
-            ClientContract cc = new Model.ClientContract();
+            ClientContract cc = new ClientContract() { sender = new Client(), recipient=new Client() };
             int id = GetIdByName(_name);
 
             using (var con = Connect())
@@ -106,7 +106,7 @@ namespace FSServer.Privider
                 {
                     while (reader.Read())
                     {
-                        cc.sender.Id = int.Parse(reader["sender"].ToString());
+                        cc.sender.Id = (int)reader["sender"];
                         cc.sender.ClientName = GetNameById(cc.sender.Id);
                         cc.recipient.Id = int.Parse(reader["recipient"].ToString());
                         cc.recipient.ClientName = GetNameById(cc.recipient.Id);
@@ -119,6 +119,44 @@ namespace FSServer.Privider
                     }
                     return cl;
                 }
+            }
+        }
+
+        public int AddFileToDownloadTable(ClientContract cl)
+        {
+            int lastId = -1;
+            using (var con = Connect())
+            {
+                string myInsertQuery = "INSERT INTO `filefordownload`( `id`, `sender`, `recipient`, `filepath`, `sizecomplite`, `size`, `complite`)";
+                myInsertQuery += string.Format(" VALUES(null, {0}, {1}, '{2}', {3}, {4}, {5})",
+                    cl.sender.Id,
+                    cl.recipient.Id,
+                    cl.Path,
+                    cl.sizecomplite,
+                    cl.size,
+                    cl.complite);
+                myInsertQuery += "; SELECT LAST_INSERT_ID();";
+                var cmd = new MySqlCommand(myInsertQuery, con);
+                try
+                {
+                    lastId = int.Parse((cmd.ExecuteScalar()).ToString());
+                }
+                catch (Exception err) { var v = err; }
+            }
+            return lastId;
+        }
+
+        public void UpdateFileForDownload(ClientContract cl)
+        {
+            using (var con = Connect())
+            {
+                string myInsertQuery = "UPDATE `filefordownload`";
+                myInsertQuery += string.Format(" SET `sizecomplite` = {0},", cl.sizecomplite);
+                myInsertQuery += string.Format(" `size` = {0},", cl.size);
+                myInsertQuery += string.Format(" `complite` = {0} ", cl.complite);
+                myInsertQuery += string.Format(" WHERE `id` = {0} ", cl.id); // id = -1 ???
+                var cmd = new MySqlCommand(myInsertQuery, con);
+                cmd.ExecuteNonQuery();
             }
         }
 
@@ -166,7 +204,7 @@ namespace FSServer.Privider
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
-                    { 
+                    {
                         ls.Add(reader["path"].ToString());
                     }
                 }

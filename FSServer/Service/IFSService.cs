@@ -51,5 +51,11 @@ namespace FSServer.Service
 
         [OperationContract]
         List<ClientContract> GetListForDownload(string _name);
+
+        [OperationContract]
+        int AddFileToDownloadTable(ClientContract cl);
+
+        [OperationContract]
+        void UpdateFileForDownload(ClientContract cl);
     }
 }

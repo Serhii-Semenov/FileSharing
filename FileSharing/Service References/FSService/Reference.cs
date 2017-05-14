@@ -135,16 +135,19 @@ namespace FileSharing.FSService {
         private int compliteField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int idField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private FileSharing.FSService.Client recipientField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private FileSharing.FSService.Client senderField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int sizeField;
+        private long sizeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int sizecompliteField;
+        private long sizecompliteField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -183,6 +186,19 @@ namespace FileSharing.FSService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public int id {
+            get {
+                return this.idField;
+            }
+            set {
+                if ((this.idField.Equals(value) != true)) {
+                    this.idField = value;
+                    this.RaisePropertyChanged("id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public FileSharing.FSService.Client recipient {
             get {
                 return this.recipientField;
@@ -209,7 +225,7 @@ namespace FileSharing.FSService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int size {
+        public long size {
             get {
                 return this.sizeField;
             }
@@ -222,7 +238,7 @@ namespace FileSharing.FSService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int sizecomplite {
+        public long sizecomplite {
             get {
                 return this.sizecompliteField;
             }
@@ -313,6 +329,18 @@ namespace FileSharing.FSService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/GetListForDownload", ReplyAction="http://tempuri.org/IFSService/GetListForDownloadResponse")]
         System.Threading.Tasks.Task<FileSharing.FSService.ClientContract[]> GetListForDownloadAsync(string _name);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/AddFileToDownloadTable", ReplyAction="http://tempuri.org/IFSService/AddFileToDownloadTableResponse")]
+        int AddFileToDownloadTable(FileSharing.FSService.ClientContract cl);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/AddFileToDownloadTable", ReplyAction="http://tempuri.org/IFSService/AddFileToDownloadTableResponse")]
+        System.Threading.Tasks.Task<int> AddFileToDownloadTableAsync(FileSharing.FSService.ClientContract cl);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/UpdateFileForDownload", ReplyAction="http://tempuri.org/IFSService/UpdateFileForDownloadResponse")]
+        void UpdateFileForDownload(FileSharing.FSService.ClientContract cl);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/UpdateFileForDownload", ReplyAction="http://tempuri.org/IFSService/UpdateFileForDownloadResponse")]
+        System.Threading.Tasks.Task UpdateFileForDownloadAsync(FileSharing.FSService.ClientContract cl);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -445,6 +473,22 @@ namespace FileSharing.FSService {
         
         public System.Threading.Tasks.Task<FileSharing.FSService.ClientContract[]> GetListForDownloadAsync(string _name) {
             return base.Channel.GetListForDownloadAsync(_name);
+        }
+        
+        public int AddFileToDownloadTable(FileSharing.FSService.ClientContract cl) {
+            return base.Channel.AddFileToDownloadTable(cl);
+        }
+        
+        public System.Threading.Tasks.Task<int> AddFileToDownloadTableAsync(FileSharing.FSService.ClientContract cl) {
+            return base.Channel.AddFileToDownloadTableAsync(cl);
+        }
+        
+        public void UpdateFileForDownload(FileSharing.FSService.ClientContract cl) {
+            base.Channel.UpdateFileForDownload(cl);
+        }
+        
+        public System.Threading.Tasks.Task UpdateFileForDownloadAsync(FileSharing.FSService.ClientContract cl) {
+            return base.Channel.UpdateFileForDownloadAsync(cl);
         }
     }
 }

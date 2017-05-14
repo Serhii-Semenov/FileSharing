@@ -107,6 +107,18 @@
   <wsdl:message name="IFSService_GetListForDownload_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetListForDownloadResponse" />
   </wsdl:message>
+  <wsdl:message name="IFSService_AddFileToDownloadTable_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddFileToDownloadTable" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_AddFileToDownloadTable_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddFileToDownloadTableResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_UpdateFileForDownload_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateFileForDownload" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_UpdateFileForDownload_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateFileForDownloadResponse" />
+  </wsdl:message>
   <wsdl:message name="IFSService_UpdateClientList_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:UpdateClientList" />
   </wsdl:message>
@@ -166,6 +178,14 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetListForDownload">
       <wsdl:input wsaw:Action="http://tempuri.org/IFSService/GetListForDownload" message="tns:IFSService_GetListForDownload_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFSService/GetListForDownloadResponse" message="tns:IFSService_GetListForDownload_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddFileToDownloadTable">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/AddFileToDownloadTable" message="tns:IFSService_AddFileToDownloadTable_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/AddFileToDownloadTableResponse" message="tns:IFSService_AddFileToDownloadTable_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateFileForDownload">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/UpdateFileForDownload" message="tns:IFSService_UpdateFileForDownload_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/UpdateFileForDownloadResponse" message="tns:IFSService_UpdateFileForDownload_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateClientList">
       <wsdl:output wsaw:Action="http://tempuri.org/IFSService/UpdateClientList" message="tns:IFSService_UpdateClientList_OutputCallbackMessage" />
@@ -277,6 +297,24 @@
     </wsdl:operation>
     <wsdl:operation name="GetListForDownload">
       <soap12:operation soapAction="http://tempuri.org/IFSService/GetListForDownload" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddFileToDownloadTable">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/AddFileToDownloadTable" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateFileForDownload">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/UpdateFileForDownload" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
