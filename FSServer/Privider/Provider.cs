@@ -95,7 +95,7 @@ namespace FSServer.Privider
         public List<ClientContract> GetListForDownload(string _name)
         {
             List<ClientContract> cl = new List<ClientContract>();
-            ClientContract cc = new ClientContract() { sender = new Client(), recipient=new Client() };
+            ClientContract cc; //= new ClientContract() { sender = new Client(), recipient=new Client() };
             int id = GetIdByName(_name);
 
             using (var con = Connect())
@@ -106,14 +106,15 @@ namespace FSServer.Privider
                 {
                     while (reader.Read())
                     {
+                        cc = new ClientContract() { sender = new Client(), recipient = new Client() };
                         cc.sender.Id = (int)reader["sender"];
                         cc.sender.ClientName = GetNameById(cc.sender.Id);
-                        cc.recipient.Id = int.Parse(reader["recipient"].ToString());
+                        cc.recipient.Id = (int)reader["recipient"];
                         cc.recipient.ClientName = GetNameById(cc.recipient.Id);
                         cc.Path = reader["filepath"].ToString();
-                        cc.sizecomplite = int.Parse(reader["sizecomplite"].ToString());
-                        cc.size = int.Parse(reader["size"].ToString());
-                        cc.complite = int.Parse(reader["recipient"].ToString());
+                        cc.sizecomplite = (int)reader["sizecomplite"];
+                        cc.size = (int)reader["size"];
+                        cc.complite = (int)reader["complite"];
 
                         cl.Add(cc);
                     }
@@ -154,7 +155,7 @@ namespace FSServer.Privider
                 myInsertQuery += string.Format(" SET `sizecomplite` = {0},", cl.sizecomplite);
                 myInsertQuery += string.Format(" `size` = {0},", cl.size);
                 myInsertQuery += string.Format(" `complite` = {0} ", cl.complite);
-                myInsertQuery += string.Format(" WHERE `id` = {0} ", cl.id); // id = -1 ???
+                myInsertQuery += string.Format(" WHERE `id` = {0} ", cl.id); 
                 var cmd = new MySqlCommand(myInsertQuery, con);
                 cmd.ExecuteNonQuery();
             }

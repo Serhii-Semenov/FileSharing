@@ -61,7 +61,7 @@ namespace FileSharing
                     WrapPanel wp = new WrapPanel();
                     wp.Tag = i;
 
-                    Label lblClient = new Label() { Content = v.recipient.ClientName};
+                    Label lblClient = new Label() { Content = v.recipient.ClientName };
                     lblClient.Width = 40;
                     lblClient.BorderThickness = new Thickness(1);
                     lblClient.Margin = new Thickness(5);
@@ -335,7 +335,7 @@ namespace FileSharing
             {
                 staff.sizecomplite = seekBuf; // записанно буферов по 1024
                 staff.size = k;
-                staff.complite = (int) (seekBuf * 1024 / (k / (100))); 
+                staff.complite = (int)(seekBuf * 1024 / (k / (100)));
 
                 // TODO
                 // UPDATE filefordownload 
@@ -378,7 +378,10 @@ namespace FileSharing
             {
                 new Task(() =>
                     {
-                        ListenerAcceptInTask(IPAddr, port, clientt.Path);
+                        ListenerAcceptInTask(IPAddr, port, clientt.Path); // передавать слиента 100%
+                        // ----------------------
+                        // ---------------------- TODO
+                        // ----------------------
                     }).Start();
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
@@ -422,7 +425,7 @@ namespace FileSharing
                 fs.Close();
                 Thread.Sleep(5000);
             }
-            
+
         }
 
         private void UpdateClientsList()
