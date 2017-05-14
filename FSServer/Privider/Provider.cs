@@ -107,7 +107,9 @@ namespace FSServer.Privider
                     while (reader.Read())
                     {
                         cc.sender.Id = int.Parse(reader["sender"].ToString());
+                        cc.sender.ClientName = GetNameById(cc.sender.Id);
                         cc.recipient.Id = int.Parse(reader["recipient"].ToString());
+                        cc.recipient.ClientName = GetNameById(cc.recipient.Id);
                         cc.Path = reader["filepath"].ToString();
                         cc.sizecomplite = int.Parse(reader["sizecomplite"].ToString());
                         cc.size = int.Parse(reader["size"].ToString());

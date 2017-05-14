@@ -45,21 +45,67 @@ namespace FileSharing
             Log = WPFLogger.Instance;
             WPFLogger.Instance.Initialize((ListBox)lbxLOG);
 
-            // Init List<ClientContract> forDownLoad;
+            // Initialize List<ClientContract> forDownLoad;
             // InitForDownload();
         }
 
         private void InitForDownload()
         {
+            lbxDownloading.Items.Clear();
+            int i = 0;
             try
             {
                 forDownLoad = new List<ClientContract>(service.GetListForDownload(name));
-            }
-            catch (Exception)
-            {
+                foreach (var v in forDownLoad)
+                {
+                    WrapPanel wp = new WrapPanel();
+                    wp.Tag = i;
 
-                throw;
+                    Label lblClient = new Label() { Content = v.recipient.ClientName};
+                    lblClient.Width = 150;
+                    lblClient.BorderThickness = new Thickness(1);
+                    lblClient.Margin = new Thickness(5);
+                    wp.Children.Add(lblClient);
+
+                    Label lblPath = new Label() { Content = v.Path };
+                    lblPath.Width = 150;
+                    lblPath.BorderThickness = new Thickness(1);
+                    lblPath.Margin = new Thickness(5);
+                    wp.Children.Add(lblPath);
+
+                    ProgressBar pbComplite = new ProgressBar()
+                    {
+                        Width = 200,
+                        Minimum = 0,
+                        Maximum = 100,
+                        Value = v.complite
+                    };
+                    wp.Children.Add(pbComplite);
+
+                    Button btnResume = new Button()
+                    {
+                        Content = "Resume file",
+                        Margin = new Thickness(5),
+                        Tag = i
+                    };
+
+                    btnResume.Click += BtnResume_Click;
+                    wp.Children.Add(btnResume);
+
+                    i++;
+                    lbxDownloading.Items.Add(wp);
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void BtnResume_Click(object sender, RoutedEventArgs e)
+        {
+            var i = ((Button)sender).Tag;
+            MessageBox.Show(i.ToString());
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
