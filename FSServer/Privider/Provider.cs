@@ -80,7 +80,8 @@ namespace FSServer.Privider
             int id = GetIdByName(_name);
             using (var con = Connect())
             {
-                string myInsertQuery = string.Format("INSERT INTO `filepath`( `id`, `client`, `path`) VALUES(null, {0}, '{1}');", id, _path);
+                //string myInsertQuery = string.Format("INSERT INTO `filepath`( `id`, `client`, `path`) VALUES(null, {0}, '{1}');", id, _path);
+                string myInsertQuery = string.Format("INSERT INTO `filepath`( `id`, `client`, `path`) VALUES(null, {0}, '{1}');", id, _path.Replace("\\", @"\\\\"));
                 var cmd = new MySqlCommand(myInsertQuery, con);
                 try
                 {
@@ -90,6 +91,7 @@ namespace FSServer.Privider
             }
             return b;
         }
+
 
         public int GetIdByName(string _name)
         {

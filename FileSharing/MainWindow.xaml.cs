@@ -159,7 +159,7 @@ namespace FileSharing
 
                 callback.TcpListenerAcceptEven += Callback_TcpListenerAccept;
                 callback.CreateTcpClientEven += Callback_CreateTcpClient;
-           
+
 
                 service = new FSServiceClient(new InstanceContext(callback));
                 id = add ? (service.CreateAccount(tbLogin.Text, tbPassword.Text, tbMail.Text)) : (service.Login(tbLogin.Text, tbPassword.Text));
@@ -231,6 +231,11 @@ namespace FileSharing
                 MessageBox.Show("staff is null");
                 return;
             }
+
+            int seekBuf = 0;
+
+            FileStream fs = null;
+            BinaryReader br = null;
             try
             {
                 TcpClient eclient = new TcpClient();
@@ -239,21 +244,27 @@ namespace FileSharing
                 BinaryFormatter format = new BinaryFormatter();
                 byte[] buf = new byte[1024];
                 int count;
-                FileStream fs = new FileStream(staff.Path, FileMode.Open);
-                BinaryReader br = new BinaryReader(fs);
+                fs = new FileStream(staff.Path, FileMode.Open);
+                br = new BinaryReader(fs);
                 long k = fs.Length;//Размер файла.
                 format.Serialize(writerStream, k.ToString());//Вначале передаём размер
                 // seek поставить в нужную позицию 
                 while ((count = br.Read(buf, 0, 1024)) > 0)
                 {
-                    format.Serialize(writerStream, buf);//А теперь в цикле по 1024 байта передаём файл
-
+                    format.Serialize(writerStream, buf); // А теперь в цикле по 1024 байта передаём файл
+                    seekBuf++;
                 }
             }
             catch (Exception err)
             {
-                MessageBox.Show(err.Message);
+                // ошибка при передачи файла в поток
+                MessageBox.Show(err.Message, seekBuf.ToString());
                 throw;
+            }
+            finally
+            {
+                br.Close();
+                fs.Close();
             }
         }
 
@@ -290,11 +301,12 @@ namespace FileSharing
                 return;
             }
 
-            try { 
-            new Task(() =>
-                {
-                    ListenerAcceptInTask(IPAddr, port, clientt.Path);
-                }).Start();
+            try
+            {
+                new Task(() =>
+                    {
+                        ListenerAcceptInTask(IPAddr, port, clientt.Path);
+                    }).Start();
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
             lbxLOG.Items.Add("TCP Listener Accept Start! --> SUCCESSFULY");
@@ -302,29 +314,43 @@ namespace FileSharing
 
         private void ListenerAcceptInTask(IPAddress _IPAddr, int _port, string _path)
         {
-            string filename = System.IO.Path.GetFileName(_path);
-            TcpListener clientListener = new TcpListener(_port);
-            clientListener.Start();
-            TcpClient client = clientListener.AcceptTcpClient();
-            NetworkStream readerStream = client.GetStream();
-            BinaryFormatter outformat = new BinaryFormatter();
-            FileStream fs = new FileStream(filename, FileMode.OpenOrCreate);
-            // при дозаписи -> new FileStream(filename, FileMode.Append);
-            BinaryWriter bw = new BinaryWriter(fs);
-            int count;
-            count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
+            FileStream fs = null;
+            BinaryWriter bw = null;
             int i = 0;
-            for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
+            int count;
+            try
             {
+                string filename = System.IO.Path.GetFileName(_path);
+                TcpListener clientListener = new TcpListener(_port);
+                clientListener.Start();
+                TcpClient client = clientListener.AcceptTcpClient();
+                NetworkStream readerStream = client.GetStream();
+                BinaryFormatter outformat = new BinaryFormatter();
+                fs = new FileStream(filename, FileMode.OpenOrCreate);
+                // при дозаписи -> new FileStream(filename, FileMode.Append);
+                bw = new BinaryWriter(fs);
+                count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
+                for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
+                {
 
-                byte[] buf = (byte[])(outformat.Deserialize(readerStream));//Собственно читаем из потока и записываем в файл
-                bw.Write(buf);
-                // добавить переменную сколько из потока записалось
-                // 
+                    byte[] buf = (byte[])(outformat.Deserialize(readerStream));//Собственно читаем из потока и записываем в файл
+                    bw.Write(buf);
+                    // добавить переменную сколько из потока записалось
+                    // 
+                }
             }
-            bw.Close();
-            fs.Close();
-            Thread.Sleep(5000);
+            catch (Exception)
+            {
+                MessageBox.Show(i.ToString());
+                throw;
+            }
+            finally
+            {
+                bw.Close();
+                fs.Close();
+                Thread.Sleep(5000);
+            }
+            
         }
 
         private void UpdateClientsList()
@@ -449,7 +475,7 @@ namespace FileSharing
             lbxLOG.Items.Add("Файл path - " + lbxPaths.SelectedItem);
 
             var client = ClientRoomCore.Clients.Clients.FirstOrDefault(c => c.Value.ClientName == username);
-            staff = new ClientContract() { sender = client.Value, recipient = new Client() {Id = id,ClientName = name }, Path = path };
+            staff = new ClientContract() { sender = client.Value, recipient = new Client() { Id = id, ClientName = name }, Path = path };
 
             // RequestForDownload
             service.RequestFoDownload(staff);
@@ -459,6 +485,7 @@ namespace FileSharing
         {
             OpenFileDialog dlg = new OpenFileDialog();
             Nullable<bool> result = dlg.ShowDialog();
+            // bool? result = dlg.ShowDialog();
             if (result == true)
             {
                 if (!AddPathToDB(dlg.FileName, name))
@@ -512,10 +539,5 @@ namespace FileSharing
             UpdateChat();
         }
 
-        private void btSend_Click(object sender, RoutedEventArgs e)
-        {
-            // SEND
-
-        }
     }
 }
