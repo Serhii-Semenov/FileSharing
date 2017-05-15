@@ -29,6 +29,6 @@ namespace FSServer.Service
         /// </summary>
         /// <param name="address">IP:PORT Клиента с которого будет скачиваться файл</param>
         [OperationContract(IsOneWay = true)]
-        void CreateTcpClient(string address);
+        void CreateTcpClient(string address, ClientContract cl);
     }
 }

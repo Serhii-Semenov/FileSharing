@@ -21,7 +21,7 @@ namespace FSServer.Model
         public long size { get; set; }
 
         [DataMember]
-        public long sizecomplite { get; set; }
+        public long sizecomplite { get; set; } // количество записанных буферов по 1024
 
         [DataMember]
         public int complite { get; set; }

@@ -47,7 +47,7 @@ namespace FSServer.Service
         void RequestFoDownload(ClientContract cl);
 
         [OperationContract]
-        void AnswerForRequest(string ip, int _id);
+        void AnswerForRequest(string ip, ClientContract cl);
 
         [OperationContract]
         List<ClientContract> GetListForDownload(string _name);

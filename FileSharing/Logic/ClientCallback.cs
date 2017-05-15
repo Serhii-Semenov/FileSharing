@@ -13,7 +13,7 @@ namespace FileSharing.Logic
         public event Action<ClientList> UpdateClientsEven;
         public event Action<ClientList> UpdateChatEven;
         public event Action<ClientContract> TcpListenerAcceptEven;
-        public event Action<string> CreateTcpClientEven;
+        public event Action<string, ClientContract> CreateTcpClientEven;
 
         /// <summary>
         /// Обновляет у всех клиентов ListBox с подключенными клиентами 
@@ -54,9 +54,9 @@ namespace FileSharing.Logic
         /// 
         /// </summary>
         /// <param name="address"></param>
-        public void CreateTcpClient(string address)
+        public void CreateTcpClient(string address, ClientContract cl)
         {
-            if (CreateTcpClientEven != null) CreateTcpClientEven(address);
+            if (CreateTcpClientEven != null) CreateTcpClientEven(address, cl);
             //StartDownLoadIF?.Invoke(address);
             // TcpClient tc = new TcpClient();
             // конектитьсяч на address и начинает .Read() ...

@@ -18,14 +18,25 @@ namespace FSServer.Service
         private static List<UserCallback> userList = new List<UserCallback>();
 
 
-        public void AnswerForRequest(string ip, int _id)
+        //public void AnswerForRequest(string ip, int _id)
+        //{
+        //    var client = userList.FirstOrDefault(c => c.Id == _id);
+        //    if (client != null)
+        //    {
+        //        new Task(() =>
+        //        {
+        //            client.Callback.CreateTcpClient(ip);
+        //        }).Start();
+        //    }
+        //}
+        public void AnswerForRequest(string ip, ClientContract cl)
         {
-            var client = userList.FirstOrDefault(c => c.Id == _id);
+            var client = userList.FirstOrDefault(c => c.Id == cl.id);
             if (client != null)
             {
                 new Task(() =>
                 {
-                    client.Callback.CreateTcpClient(ip);
+                    client.Callback.CreateTcpClient(ip, cl);
                 }).Start();
             }
         }

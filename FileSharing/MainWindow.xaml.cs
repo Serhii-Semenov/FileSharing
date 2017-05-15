@@ -90,6 +90,7 @@ namespace FileSharing
                         Tag = i
                     };
 
+
                     btnResume.Click += BtnResume_Click;
                     wp.Children.Add(btnResume);
 
@@ -106,8 +107,11 @@ namespace FileSharing
 
         private void BtnResume_Click(object sender, RoutedEventArgs e)
         {
-            var i = ((Button)sender).Tag;
-            MessageBox.Show(i.ToString());
+            var i = (int)((Button)sender).Tag;
+            ClientContract cl = new ClientContract();
+            cl = forDownLoad[i];
+
+            service.RequestFoDownload(cl);
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -252,7 +256,7 @@ namespace FileSharing
                 lbxChat.Items.Add(v);
         }
 
-        private void Callback_CreateTcpClient(string obj)
+        private void Callback_CreateTcpClient(string obj, ClientContract cl)
         {
             string str = (string)obj;
             lbxLOG.Items.Add("AnswerForRequest - object -> " + str);
@@ -284,7 +288,7 @@ namespace FileSharing
             {
                 new Task(() =>
                 {
-                    TcpClientInTask(ipEndPoint);
+                    TcpClientInTask(ipEndPoint, cl);
                 }).Start();
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
@@ -292,7 +296,7 @@ namespace FileSharing
 
         }
 
-        private void TcpClientInTask(IPEndPoint _ep)
+        private void TcpClientInTask(IPEndPoint _ep, ClientContract cl)
         {
             if (staff == null)
             {
@@ -317,11 +321,21 @@ namespace FileSharing
                 br = new BinaryReader(fs);
                 k = fs.Length;//Размер файла
 
-                format.Serialize(writerStream, k.ToString());//Вначале передаём размер
-                // seek поставить в нужную позицию 
+                format.Serialize(writerStream, k.ToString()); // Вначале передаём размер
+
+                // пропускаем записанные буфера
+                if (cl.sizecomplite != 0)
+                {
+                    for (int i = 0; i < cl.sizecomplite; i++)
+                    {
+                        br.Read(buf, 0, 1024);
+                    }
+                }
+
+                // А теперь в цикле по 1024 байта передаём файл
                 while ((count = br.Read(buf, 0, 1024)) > 0)
                 {
-                    format.Serialize(writerStream, buf); // А теперь в цикле по 1024 байта передаём файл
+                    format.Serialize(writerStream, buf); 
                     seekBuf++;
                 }
             }
@@ -355,7 +369,7 @@ namespace FileSharing
             string ip = "127.0.0.1:42009";
             // **********
 
-            service.AnswerForRequest(ip, clientt.recipient.Id);
+            service.AnswerForRequest(ip, clientt);
             Log.Info("TCP Listener Accept Start! " + ip + " - " + clientt.recipient.ClientName);
 
             string[] ipport = ip.Split(':');
@@ -378,17 +392,14 @@ namespace FileSharing
             {
                 new Task(() =>
                     {
-                        ListenerAcceptInTask(IPAddr, port, clientt.Path); // передавать слиента 100%
-                        // ----------------------
-                        // ---------------------- TODO
-                        // ----------------------
+                        ListenerAcceptInTask(IPAddr, port, clientt);
                     }).Start();
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
             lbxLOG.Items.Add("TCP Listener Accept Start! --> SUCCESSFULY");
         }
 
-        private void ListenerAcceptInTask(IPAddress _IPAddr, int _port, string _path)
+        private void ListenerAcceptInTask(IPAddress _IPAddr, int _port, ClientContract cl)
         {
             FileStream fs = null;
             BinaryWriter bw = null;
@@ -396,27 +407,29 @@ namespace FileSharing
             int count;
             try
             {
-                string filename = System.IO.Path.GetFileName(_path);
+                string filename = System.IO.Path.GetFileName(cl.Path);
                 TcpListener clientListener = new TcpListener(_port);
                 clientListener.Start();
                 TcpClient client = clientListener.AcceptTcpClient();
                 NetworkStream readerStream = client.GetStream();
                 BinaryFormatter outformat = new BinaryFormatter();
-                fs = new FileStream(filename, FileMode.OpenOrCreate);
+                fs =  cl.sizecomplite == 0 ? new FileStream(filename, FileMode.OpenOrCreate) : new FileStream(filename, FileMode.Append);
                 // при дозаписи -> new FileStream(filename, FileMode.Append);
                 bw = new BinaryWriter(fs);
                 count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
+                if (cl.sizecomplite != 0) bw.Seek((int)cl.sizecomplite, SeekOrigin.Current);
                 for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
                 {
-                    byte[] buf = (byte[])(outformat.Deserialize(readerStream));//Собственно читаем из потока и записываем в файл
+                    byte[] buf = (byte[])(outformat.Deserialize(readerStream)); // Читаем из потока и записываем в файл
                     bw.Write(buf);
-                    // добавить переменную сколько из потока записалось
+                    
+                    // добавить переменную сколько из потока записалось ???
                     // 
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show(i.ToString());
+                MessageBox.Show(ex.Message, i.ToString());
                 throw;
             }
             finally

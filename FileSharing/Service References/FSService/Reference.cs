@@ -319,10 +319,10 @@ namespace FileSharing.FSService {
         System.Threading.Tasks.Task RequestFoDownloadAsync(FileSharing.FSService.ClientContract cl);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/AnswerForRequest", ReplyAction="http://tempuri.org/IFSService/AnswerForRequestResponse")]
-        void AnswerForRequest(string ip, int _id);
+        void AnswerForRequest(string ip, FileSharing.FSService.ClientContract cl);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/AnswerForRequest", ReplyAction="http://tempuri.org/IFSService/AnswerForRequestResponse")]
-        System.Threading.Tasks.Task AnswerForRequestAsync(string ip, int _id);
+        System.Threading.Tasks.Task AnswerForRequestAsync(string ip, FileSharing.FSService.ClientContract cl);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/GetListForDownload", ReplyAction="http://tempuri.org/IFSService/GetListForDownloadResponse")]
         FileSharing.FSService.ClientContract[] GetListForDownload(string _name);
@@ -356,7 +356,7 @@ namespace FileSharing.FSService {
         string TcpListenerAccept(FileSharing.FSService.ClientContract cl);
         
         [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IFSService/CreateTcpClient")]
-        void CreateTcpClient(string address);
+        void CreateTcpClient(string address, FileSharing.FSService.ClientContract cl);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -459,12 +459,12 @@ namespace FileSharing.FSService {
             return base.Channel.RequestFoDownloadAsync(cl);
         }
         
-        public void AnswerForRequest(string ip, int _id) {
-            base.Channel.AnswerForRequest(ip, _id);
+        public void AnswerForRequest(string ip, FileSharing.FSService.ClientContract cl) {
+            base.Channel.AnswerForRequest(ip, cl);
         }
         
-        public System.Threading.Tasks.Task AnswerForRequestAsync(string ip, int _id) {
-            return base.Channel.AnswerForRequestAsync(ip, _id);
+        public System.Threading.Tasks.Task AnswerForRequestAsync(string ip, FileSharing.FSService.ClientContract cl) {
+            return base.Channel.AnswerForRequestAsync(ip, cl);
         }
         
         public FileSharing.FSService.ClientContract[] GetListForDownload(string _name) {
