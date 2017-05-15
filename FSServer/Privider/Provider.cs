@@ -8,8 +8,8 @@ namespace FSServer.Privider
 {
     public class Provider
     {
-        const string connectionString = "Database=dbfilesharing;server=127.0.0.1;UserId=root;Password=''";
-        //const string connectionString = "Database=c17db;server=10.6.1.199;UserId=c17db;Password=12345";
+        //const string connectionString = "Database=dbfilesharing;server=127.0.0.1;UserId=root;Password=''";
+        const string connectionString = "Database=c17db;server=10.6.1.199;UserId=c17db;Password=12345";
 
         private MySqlConnection Connect()
         {

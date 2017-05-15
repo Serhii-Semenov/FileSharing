@@ -319,20 +319,24 @@ namespace FileSharing
                 byte[] buf = new byte[1024];
                 int count;
                 fs = new FileStream(staff.Path, FileMode.Open);
+                
                 br = new BinaryReader(fs);
                 k = fs.Length;//Размер файла
 
                 format.Serialize(writerStream, k.ToString()); // Вначале передаём размер
 
                 // пропускаем записанные буфера
-                if (cl.sizecomplite != 0)
-                {
-                    for (int i = 0; i < cl.sizecomplite; i++)
-                    {
-                        br.Read(buf, 0, 1024);
-                    }
-                }
+                //if (cl.sizecomplite != 0)
+                //{
+                //    for (int i = 0; i < cl.sizecomplite; i++)
+                //    {
+                //        int size = br.Read(buf, 0, 1024); // 
+                //    }
+                //}
 
+                long position = fs.Seek(cl.complite * 1024, SeekOrigin.Begin);
+                // Log.Debug(position);
+               
                 // А теперь в цикле по 1024 байта передаём файл
                 while ((count = br.Read(buf, 0, 1024)) > 0)
                 {
@@ -410,6 +414,7 @@ namespace FileSharing
             {
                 string filename = System.IO.Path.GetFileName(cl.Path);
                 TcpListener clientListener = new TcpListener(_port);
+                // проверить clientListener != null
                 clientListener.Start();
                 TcpClient client = clientListener.AcceptTcpClient();
                 NetworkStream readerStream = client.GetStream();
@@ -418,7 +423,17 @@ namespace FileSharing
                 // при дозаписи -> new FileStream(filename, FileMode.Append);
                 bw = new BinaryWriter(fs);
                 count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
-                if (cl.sizecomplite != 0) bw.Seek((int)cl.sizecomplite, SeekOrigin.Current);
+               // if (cl.sizecomplite != 0) bw.Seek((int)cl.sizecomplite*, SeekOrigin.Current);
+
+                byte[] bf = new byte[1024];
+
+                while(readerStream.CanRead)
+                {
+                    int readedBytes = readerStream.Read(bf, 0, bf.Length);
+                    bw.Write(bf, 0, readedBytes);
+                }
+
+                //******
                 for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
                 {
                     byte[] buf = (byte[])(outformat.Deserialize(readerStream)); // Читаем из потока и записываем в файл
