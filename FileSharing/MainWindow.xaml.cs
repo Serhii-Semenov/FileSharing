@@ -102,6 +102,7 @@ namespace FileSharing
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                throw;
             }
         }
 
