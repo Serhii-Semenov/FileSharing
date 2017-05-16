@@ -46,7 +46,7 @@ namespace FileSharing.Logic
             // TcpListener tl = new TcpListener();
             if (TcpListenerAcceptEven != null) TcpListenerAcceptEven(cl);
 
-            return "10.6.0.34:3333";
+            return "10.6.0.34:49453";
         }
 
 
@@ -58,8 +58,6 @@ namespace FileSharing.Logic
         {
             if (CreateTcpClientEven != null) CreateTcpClientEven(address, cl);
             //StartDownLoadIF?.Invoke(address);
-            // TcpClient tc = new TcpClient();
-            // конектитьсяч на address и начинает .Read() ...
         }
 
     }
