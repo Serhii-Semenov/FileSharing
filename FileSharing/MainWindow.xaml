@@ -43,6 +43,13 @@
                 <WrapPanel>
                     <Button x:Name="btnDownload" Content="Download" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="75" Click="btnDownload_Click" />
                     <Button x:Name="btnUpload" Content="Upaload" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Top" Width="75" Click="btnUpload_Click" />
+
+                     <!-- ProgressBar -->
+                    <Canvas Visibility="Hidden" Name="cnvProgress"  Margin="5">
+                        <ProgressBar Minimum="0" Maximum="100" Value="75" Name="pbStatus" Width="150" Height="25" />
+                        <TextBlock Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="UltraBold" Canvas.Left="75" Canvas.Top="4" />
+                    </Canvas>
+
                 </WrapPanel>
             </StackPanel>
         </WrapPanel>

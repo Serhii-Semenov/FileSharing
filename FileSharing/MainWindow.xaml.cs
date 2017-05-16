@@ -15,7 +15,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Net;
 using Logger;
-
+using System.ComponentModel;
 
 namespace FileSharing
 {
@@ -23,6 +23,7 @@ namespace FileSharing
     {
         ClientContract staff = null;
         List<ClientContract> forDownLoad;
+        BackgroundWorker worker;
 
         int id = 0;
         string name = "";
@@ -45,8 +46,32 @@ namespace FileSharing
             Log = WPFLogger.Instance;
             WPFLogger.Instance.Initialize((ListBox)lbxLOG);
 
-            // Initialize List<ClientContract> forDownLoad;
-            // InitForDownload();
+            // Initialize worker
+            worker = new BackgroundWorker(); // variable declared in the class
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += new DoWorkEventHandler(worker_DoWork);
+            worker.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+        }
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.Title += " DONE";
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            for (int j = 0; j <= 100; j++)
+            {
+                worker.ReportProgress(j);
+                Title += j.ToString();
+                Thread.Sleep(50);
+            }
+        }
+
+        void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // searchProgressBar.Value = e.ProgressPercentage;
         }
 
         private void InitForDownload()
@@ -312,9 +337,9 @@ namespace FileSharing
             long k = 0;
             try
             {
-                TcpClient eclient = new TcpClient();
-                eclient.Connect(_ep);
-                NetworkStream writerStream = eclient.GetStream();
+                TcpClient senderTcpClient = new TcpClient();
+                senderTcpClient.Connect(_ep);
+                NetworkStream writerStream = senderTcpClient.GetStream();
                 BinaryFormatter format = new BinaryFormatter();
                 byte[] buf = new byte[1024];
                 int count;
@@ -413,16 +438,22 @@ namespace FileSharing
             try
             {
                 string filename = System.IO.Path.GetFileName(cl.Path);
-                TcpListener clientListener = new TcpListener(_port);
-                // проверить clientListener != null
-                clientListener.Start();
-                TcpClient client = clientListener.AcceptTcpClient();
-                NetworkStream readerStream = client.GetStream();
+
+                TcpListener recipientListener = new TcpListener(_port);
+                // проверить TcpListener != null - НЕПОНЯЛ КАК?
+
+                recipientListener.Start();
+                TcpClient recipient = recipientListener.AcceptTcpClient();
+                NetworkStream readerStream = recipient.GetStream();
                 BinaryFormatter outformat = new BinaryFormatter();
                 fs =  cl.sizecomplite == 0 ? new FileStream(filename, FileMode.OpenOrCreate) : new FileStream(filename, FileMode.Append);
                 // при дозаписи -> new FileStream(filename, FileMode.Append);
+
                 bw = new BinaryWriter(fs);
-                count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
+
+                count = (int)cl.size;
+                //count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
+
                // if (cl.sizecomplite != 0) bw.Seek((int)cl.sizecomplite*, SeekOrigin.Current);
 
                 byte[] bf = new byte[1024];
@@ -568,9 +599,7 @@ namespace FileSharing
 
         private void btnDownload_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
-            // callback init question to download
-            // 
+            // TODO ProgressBar
 
             string username = lbxClients.SelectedItem.ToString();
             string path = lbxPaths.SelectedItem.ToString();
