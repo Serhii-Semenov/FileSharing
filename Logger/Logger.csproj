@@ -52,10 +52,7 @@
     <Compile Include="WPFLogger.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FSServer\FSServer.csproj">
-      <Project>{f633cf84-f440-4efc-a206-99fee5ba3ee8}</Project>
-      <Name>FSServer</Name>
-    </ProjectReference>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

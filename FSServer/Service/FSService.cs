@@ -6,6 +6,7 @@ using System.ServiceModel;
 using FSServer.Privider;
 using System.Linq;
 using System.Threading.Tasks;
+using Logger;
 
 
 
@@ -16,6 +17,13 @@ namespace FSServer.Service
     class FSService : IFSService
     {
         private static List<UserCallback> userList = new List<UserCallback>();
+        private ILogger Log = FileLogger.Instance;
+
+        public static void Configure(ServiceConfiguration config)
+        {
+            FileLogger.Instance.Initialize("log.txt");
+        } 
+
 
         //public void AnswerForRequest(string ip, int _id)
         //{
