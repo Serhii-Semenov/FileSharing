@@ -10,6 +10,7 @@ namespace Logger
     public class FileLogger : ILogger
     {
         public static FileLogger Instance { get { return instance; } }
+        private static int number { get; set; }
         private static readonly FileLogger instance = new FileLogger();
         private string filename;
         private FileLogger() { }
@@ -17,6 +18,7 @@ namespace Logger
         public void Initialize(string filename)
         {
             this.filename = filename;
+            number = 1;
         }
 
         public void Debug(string message)

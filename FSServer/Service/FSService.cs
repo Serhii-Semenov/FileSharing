@@ -17,7 +17,6 @@ namespace FSServer.Service
     {
         private static List<UserCallback> userList = new List<UserCallback>();
 
-
         //public void AnswerForRequest(string ip, int _id)
         //{
         //    var client = userList.FirstOrDefault(c => c.Id == _id);
@@ -29,9 +28,10 @@ namespace FSServer.Service
         //        }).Start();
         //    }
         //}
+
         public void AnswerForRequest(string ip, ClientContract cl)
         {
-            var client = userList.FirstOrDefault(c => c.Id == cl.id);
+            var client = userList.FirstOrDefault(c => c.Id == cl.recipient.Id);
             if (client != null)
             {
                 new Task(() =>

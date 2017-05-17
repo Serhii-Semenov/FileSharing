@@ -23,15 +23,15 @@ namespace Logger
             number = 1;
         }
 
-        public void Debug(string message) { objName.Items.Add(string.Format("({0})DEBUG : {1}", number, message)); }
+        public void Debug(string message) { objName.Items.Add(string.Format("({0})DEBUG : {1}", number++, message)); }
 
-        public void Error(string message) { objName.Items.Add(string.Format("({0})ERROR : {1}", number, message)); }
+        public void Error(string message) { objName.Items.Add(string.Format("({0})ERROR : {1}", number++, message)); }
 
-        public void Fatal(string message) { objName.Items.Add(string.Format("({0})FATAL : {1}", number, message)); }
+        public void Fatal(string message) { objName.Items.Add(string.Format("({0})FATAL : {1}", number++, message)); }
 
-        public void Info(string message) { objName.Items.Add(string.Format("({0})INFO : {1}", number, message)); }
+        public void Info(string message) { objName.Items.Add(string.Format("({0})INFO : {1}", number++, message)); }
 
-        public void Warrning(string message) { objName.Items.Add(string.Format("({0})WARRNING : {1}", number, message)); }
+        public void Warrning(string message) { objName.Items.Add(string.Format("({0})WARRNING : {1}", number++, message)); }
 
     }
 }

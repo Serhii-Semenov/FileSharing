@@ -284,6 +284,8 @@ namespace FileSharing
 
         private void Callback_CreateTcpClient(string obj, ClientContract cl)
         {
+            Log.Debug(string.Format("Callback_CreateTcpClient({0}, {1}) ", obj, ClToString(cl)));
+
             string str = (string)obj;
             lbxLOG.Items.Add("AnswerForRequest - object -> " + str);
 
@@ -317,13 +319,16 @@ namespace FileSharing
                     TcpClientInTask(ipEndPoint, cl);
                 }).Start();
             }
-            catch (Exception err) { MessageBox.Show(err.Message); }
-
-
+            catch (Exception err) { MessageBox.Show(err.Message); }       
         }
 
         private void TcpClientInTask(IPEndPoint _ep, ClientContract cl)
         {
+            Dispatcher.Invoke(new Action(() => {
+                Log.Debug("ListenerAcceptInTask(inside) " + _ep.ToString() 
+                        + " " + cl.ToString());
+            }));
+
             if (staff == null)
             {
                 MessageBox.Show("staff is null");
@@ -392,6 +397,7 @@ namespace FileSharing
 
         private void Callback_TcpListenerAccept(ClientContract clientt)
         {
+
             lbxLOG.Items.Add("sender - " + clientt.sender.ClientName + " & rec.-" + clientt.recipient.ClientName + " path: " + clientt.Path);
             lbxLOG.Items.Add("sender - " + clientt.sender.ClientName);
 
@@ -425,7 +431,7 @@ namespace FileSharing
                         ListenerAcceptInTask(IPAddr, port, clientt);
                     }).Start();
                     Log.Debug("Callback_TcpListenerAccept " + IPAddr.ToString() + " " + port.ToString() 
-                        + " " + clientt.ToString() );
+                        + " " + ClToString(clientt) );
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
             
@@ -435,7 +441,7 @@ namespace FileSharing
         {
             Dispatcher.Invoke(new Action(()=> {
                 Log.Debug("ListenerAcceptInTask(inside) " + _IPAddr.ToString() + " " + _port.ToString()
-                        + " " + cl.ToString());
+                        + " " + ClToString(cl));
             }));
             
             FileStream fs = null;
@@ -472,14 +478,14 @@ namespace FileSharing
                 }
 
                 //******
-                for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
-                {
-                    byte[] buf = (byte[])(outformat.Deserialize(readerStream)); // Читаем из потока и записываем в файл
-                    bw.Write(buf);
+                //for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
+                //{
+                //    byte[] buf = (byte[])(outformat.Deserialize(readerStream)); // Читаем из потока и записываем в файл
+                //    bw.Write(buf);
                     
-                    // добавить переменную сколько из потока записалось ???
-                    // 
-                }
+                //    // добавить переменную сколько из потока записалось ???
+                //    // 
+                //}
             }
             catch (Exception ex)
             {
@@ -631,9 +637,12 @@ namespace FileSharing
 
             // Add staff to DB
             staff.id = service.AddFileToDownloadTable(staff);
+            Log.Debug("btnDownload_Click()");
+            Log.Debug(string.Format("service.AddFileToDownloadTable({0})", ClToString(staff)));
 
             // RequestForDownload
             service.RequestFoDownload(staff);
+            Log.Debug(string.Format("service.RequestFoDownload({0})", ClToString(staff)));
         }
 
         private void btnUpload_Click(object sender, RoutedEventArgs e)
@@ -692,6 +701,12 @@ namespace FileSharing
             service.SendMessageToChat(id, tbChat.Text);
             tbChat.Clear();
             UpdateChat();
+        }
+
+        private string ClToString(ClientContract cl)
+        {
+            return string.Format("[{0}]S:({1}){2}; R:({3}){4}; SIZE:{5}; PATH:{6}", 
+                cl.id, cl.sender.Id, cl.sender.ClientName, cl.recipient.Id, cl.recipient.ClientName, cl.size, cl.Path);
         }
 
     }
