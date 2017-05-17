@@ -26,5 +26,10 @@ namespace FSServer.Model
         [DataMember]
         public int complite { get; set; }
 
+        public override string ToString()
+        {
+            return string.Format("[{0}]S:{1};R:{2}; SIZE:{3}; PATH:{4}", id, sender, recipient, size, Path);
+        }
+
     }
 }

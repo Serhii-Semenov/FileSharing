@@ -424,13 +424,20 @@ namespace FileSharing
                     {
                         ListenerAcceptInTask(IPAddr, port, clientt);
                     }).Start();
+                    Log.Debug("Callback_TcpListenerAccept " + IPAddr.ToString() + " " + port.ToString() 
+                        + " " + clientt.ToString() );
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
-            lbxLOG.Items.Add("TCP Listener Accept Start! --> SUCCESSFULY");
+            
         }
 
         private void ListenerAcceptInTask(IPAddress _IPAddr, int _port, ClientContract cl)
         {
+            Dispatcher.Invoke(new Action(()=> {
+                Log.Debug("ListenerAcceptInTask(inside) " + _IPAddr.ToString() + " " + _port.ToString()
+                        + " " + cl.ToString());
+            }));
+            
             FileStream fs = null;
             BinaryWriter bw = null;
             int i = 0;
