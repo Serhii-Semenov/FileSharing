@@ -353,17 +353,24 @@ namespace FileSharing
                 fs = new FileStream(staff.Path, FileMode.Open);
 
                 br = new BinaryReader(fs);
-                k = cl.size;
+                k = fs.Length; // Размер файла
 
                 long position = fs.Seek(cl.complite, SeekOrigin.Begin);
                 DispachLog(position.ToString());
 
-                // А теперь в цикле по 1024 байта передаём файл
-                while ((count = br.Read(buf, 0, 1024)) > 0)
+                while(writerStream.CanWrite)
                 {
-                    format.Serialize(writerStream, buf);
-                    seekBite++;
+                    br.Read(buf, 0, buf.Length);
+                    writerStream.Read(buf, 0, buf.Length);
+                    
                 }
+
+                // А теперь в цикле по 1024 байта передаём файл
+                //while ((count = br.Read(buf, 0, 1024)) > 0)
+                //{
+                //    format.Serialize(writerStream, buf);
+                //    seekBite++;
+                //}
             }
             catch (Exception err)
             {
@@ -467,6 +474,7 @@ namespace FileSharing
                     int readedBytes = readerStream.Read(buf, 0, buf.Length);
                     bw.Write(buf, 0, readedBytes);
                 }
+                // когда и как он поймет что произошел конец файла
 
             }
             catch (Exception ex)
@@ -480,7 +488,6 @@ namespace FileSharing
                 fs.Close();
                 Thread.Sleep(5000);
             }
-
         }
 
         private void UpdateClientsList()
