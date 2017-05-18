@@ -3,7 +3,7 @@
   <Class Name="FSServer.Service.FSService">
     <Position X="0.5" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>EIAQAAAAACAAABAQCAAgBAIAAAAQAAAAAAAQAAAAgAg=</HashCode>
+      <HashCode>EIAQAAAAACAAABAQCAAgBAIAAAgQAAAAAAAQAAAAgAg=</HashCode>
       <FileName>Service\FSService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -44,7 +44,7 @@
     </TypeIdentifier>
   </Class>
   <Interface Name="FSServer.Service.ICallback">
-    <Position X="0.5" Y="4.75" Width="1.5" />
+    <Position X="0.5" Y="5.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAIA=</HashCode>
       <FileName>Service\ICallback.cs</FileName>

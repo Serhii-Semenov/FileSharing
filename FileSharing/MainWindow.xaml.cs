@@ -335,7 +335,7 @@ namespace FileSharing
         /// <param name="cl">Client Contract</param>
         private void TcpClientInTask(IPEndPoint _ep, ClientContract cl)
         {
-            DispachLog("ListenerAcceptInTask(inside)" + _ep.ToString() + " " + cl.ToString());
+            DispachLog("TcpClientInTask(inside)" + _ep.ToString() + " " + cl.ToString());
 
             long seekBite = 0;
 
@@ -347,7 +347,7 @@ namespace FileSharing
                 TcpClient senderTcpClient = new TcpClient();
                 senderTcpClient.Connect(_ep);
                 NetworkStream writerStream = senderTcpClient.GetStream();
-                BinaryFormatter format = new BinaryFormatter();
+                //BinaryFormatter format = new BinaryFormatter();
                 byte[] buf = new byte[1024];
                 int count;
                 fs = new FileStream(staff.Path, FileMode.Open);
@@ -358,10 +358,10 @@ namespace FileSharing
                 long position = fs.Seek(cl.complite, SeekOrigin.Begin);
                 DispachLog(position.ToString());
 
-                while(writerStream.CanWrite)
+                while((count = br.Read(buf, 0, 1024)) > 0)
                 {
-                    br.Read(buf, 0, buf.Length);
-                    writerStream.Read(buf, 0, buf.Length);
+                    //br.Read(buf, 0, buf.Length);
+                    writerStream.Write(buf, 0, count);
                     
                 }
 
@@ -399,7 +399,8 @@ namespace FileSharing
             lbxLOG.Items.Add("sender - " + clientt.sender.ClientName);
 
             // **********
-            string ip = "127.0.0.1:42009";
+            //string ip = "127.0.0.1:42009";
+            string ip = "10.6.6.64:42009";
             // **********
 
             service.AnswerForRequest(ip, clientt);
@@ -458,14 +459,14 @@ namespace FileSharing
                 recipientListener.Start();
                 TcpClient recipient = recipientListener.AcceptTcpClient();
                 NetworkStream readerStream = recipient.GetStream();
-                BinaryFormatter outformat = new BinaryFormatter();
+                // BinaryFormatter outformat = new BinaryFormatter();
                 fs = cl.sizecomplite == 0 ?
                     new FileStream(filename, FileMode.OpenOrCreate) :
                     new FileStream(filename, FileMode.Append);
 
                 bw = new BinaryWriter(fs);
 
-                count = (int)cl.size;
+                //count = (int)cl.size;
 
                 byte[] buf = new byte[1024];
 
@@ -480,10 +481,11 @@ namespace FileSharing
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, i.ToString());
-                throw;
+                //throw;
             }
             finally
             {
+                // здесь записывать сколько записалось
                 bw.Close();
                 fs.Close();
                 Thread.Sleep(5000);
@@ -625,9 +627,9 @@ namespace FileSharing
             };
 
             // Add staff to DB
-            staff.id = service.AddFileToDownloadTable(staff);
+            //staff.id = service.AddFileToDownloadTable(staff);
             Log.Debug("btnDownload_Click()");
-            Log.Debug(string.Format("service.AddFileToDownloadTable({0})", ClToString(staff)));
+            //Log.Debug(string.Format("service.AddFileToDownloadTable({0})", ClToString(staff)));
 
             // RequestForDownload
             service.RequestFoDownload(staff);

@@ -352,11 +352,11 @@
   </wsdl:binding>
   <wsdl:service name="FSService">
     <wsdl:port name="NetTcpBinding_IFSService" binding="tns:NetTcpBinding_IFSService">
-      <soap12:address location="net.tcp://localhost:42042/FSServer/ServiceFS/" />
+      <soap12:address location="net.tcp://10.6.6.64:42042/WCFGameServer/Service1/" />
       <wsa10:EndpointReference>
-        <wsa10:Address>net.tcp://localhost:42042/FSServer/ServiceFS/</wsa10:Address>
+        <wsa10:Address>net.tcp://10.6.6.64:42042/WCFGameServer/Service1/</wsa10:Address>
         <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
-          <Upn>Xeon\Base</Upn>
+          <Upn>xvII@step.edu</Upn>
         </Identity>
       </wsa10:EndpointReference>
     </wsdl:port>
