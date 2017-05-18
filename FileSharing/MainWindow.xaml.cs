@@ -33,9 +33,7 @@ namespace FileSharing
         public MainWindow()
         {
             InitializeComponent();
-
             Init();
-
         }
 
         private void Init()
@@ -319,23 +317,27 @@ namespace FileSharing
                     TcpClientInTask(ipEndPoint, cl);
                 }).Start();
             }
-            catch (Exception err) { MessageBox.Show(err.Message); }       
+            catch (Exception err) { MessageBox.Show(err.Message); }
         }
 
+        private void DispachLog(string s)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                Log.Debug(s);
+            }));
+        }
+
+        /// <summary>
+        /// Sender TCP Client
+        /// </summary>
+        /// <param name="_ep">End point</param>
+        /// <param name="cl">Client Contract</param>
         private void TcpClientInTask(IPEndPoint _ep, ClientContract cl)
         {
-            Dispatcher.Invoke(new Action(() => {
-                Log.Debug("ListenerAcceptInTask(inside) " + _ep.ToString() 
-                        + " " + cl.ToString());
-            }));
+            DispachLog("ListenerAcceptInTask(inside)" + _ep.ToString() + " " + cl.ToString());
 
-            if (staff == null)
-            {
-                MessageBox.Show("staff is null");
-                return;
-            }
-
-            long seekBuf = 0;
+            long seekBite = 0;
 
             FileStream fs = null;
             BinaryReader br = null;
@@ -349,46 +351,34 @@ namespace FileSharing
                 byte[] buf = new byte[1024];
                 int count;
                 fs = new FileStream(staff.Path, FileMode.Open);
-                
+
                 br = new BinaryReader(fs);
-                k = fs.Length;//Размер файла
+                k = cl.size;
 
-                format.Serialize(writerStream, k.ToString()); // Вначале передаём размер
+                long position = fs.Seek(cl.complite, SeekOrigin.Begin);
+                DispachLog(position.ToString());
 
-                // пропускаем записанные буфера
-                //if (cl.sizecomplite != 0)
-                //{
-                //    for (int i = 0; i < cl.sizecomplite; i++)
-                //    {
-                //        int size = br.Read(buf, 0, 1024); // 
-                //    }
-                //}
-
-                long position = fs.Seek(cl.complite * 1024, SeekOrigin.Begin);
-                // Log.Debug(position);
-               
                 // А теперь в цикле по 1024 байта передаём файл
                 while ((count = br.Read(buf, 0, 1024)) > 0)
                 {
-                    format.Serialize(writerStream, buf); 
-                    seekBuf++;
+                    format.Serialize(writerStream, buf);
+                    seekBite++;
                 }
             }
             catch (Exception err)
             {
                 // ошибка при передачи файла в поток
-                MessageBox.Show(err.Message, seekBuf.ToString());
+                MessageBox.Show(err.Message, seekBite.ToString());
                 // throw;
             }
             finally
             {
-                staff.sizecomplite = seekBuf; // записанно буферов по 1024
+                staff.sizecomplite = seekBite; // записанно байт
+                DispachLog(" seekBite -> " + seekBite.ToString());
                 staff.size = k;
-                staff.complite = (int)(seekBuf * 1024 / (k / (100)));
+                staff.complite = (int)(seekBite / (k / (100)));
 
-                // TODO
-                // UPDATE filefordownload 
-                service.UpdateFileForDownload(staff);
+                service.UpdateFileForDownload(cl);
 
                 br.Close();
                 fs.Close();
@@ -430,20 +420,23 @@ namespace FileSharing
                     {
                         ListenerAcceptInTask(IPAddr, port, clientt);
                     }).Start();
-                    Log.Debug("Callback_TcpListenerAccept " + IPAddr.ToString() + " " + port.ToString() 
-                        + " " + ClToString(clientt) );
+                Log.Debug("Callback_TcpListenerAccept " + IPAddr.ToString() + " " + port.ToString()
+                    + " " + ClToString(clientt));
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
-            
+
         }
 
+        /// <summary>
+        /// Recipient TcpListener
+        /// </summary>
+        /// <param name="_IPAddr"></param>
+        /// <param name="_port"></param>
+        /// <param name="cl"></param>
         private void ListenerAcceptInTask(IPAddress _IPAddr, int _port, ClientContract cl)
         {
-            Dispatcher.Invoke(new Action(()=> {
-                Log.Debug("ListenerAcceptInTask(inside) " + _IPAddr.ToString() + " " + _port.ToString()
-                        + " " + ClToString(cl));
-            }));
-            
+            DispachLog("ListenerAcceptInTask(inside) " + _IPAddr.ToString() + " " + _port.ToString() + " " + ClToString(cl));
+
             FileStream fs = null;
             BinaryWriter bw = null;
             int i = 0;
@@ -459,33 +452,22 @@ namespace FileSharing
                 TcpClient recipient = recipientListener.AcceptTcpClient();
                 NetworkStream readerStream = recipient.GetStream();
                 BinaryFormatter outformat = new BinaryFormatter();
-                fs =  cl.sizecomplite == 0 ? new FileStream(filename, FileMode.OpenOrCreate) : new FileStream(filename, FileMode.Append);
-                // при дозаписи -> new FileStream(filename, FileMode.Append);
+                fs = cl.sizecomplite == 0 ?
+                    new FileStream(filename, FileMode.OpenOrCreate) :
+                    new FileStream(filename, FileMode.Append);
 
                 bw = new BinaryWriter(fs);
 
                 count = (int)cl.size;
-                //count = int.Parse(outformat.Deserialize(readerStream).ToString()); // Получаем размер файла
 
-               // if (cl.sizecomplite != 0) bw.Seek((int)cl.sizecomplite*, SeekOrigin.Current);
+                byte[] buf = new byte[1024];
 
-                byte[] bf = new byte[1024];
-
-                while(readerStream.CanRead)
+                while (readerStream.CanRead)
                 {
-                    int readedBytes = readerStream.Read(bf, 0, bf.Length);
-                    bw.Write(bf, 0, readedBytes);
+                    int readedBytes = readerStream.Read(buf, 0, buf.Length);
+                    bw.Write(buf, 0, readedBytes);
                 }
 
-                //******
-                //for (; i < count; i += 1024)//Цикл пока не дойдём до конца файла
-                //{
-                //    byte[] buf = (byte[])(outformat.Deserialize(readerStream)); // Читаем из потока и записываем в файл
-                //    bw.Write(buf);
-                    
-                //    // добавить переменную сколько из потока записалось ???
-                //    // 
-                //}
             }
             catch (Exception ex)
             {
@@ -705,7 +687,7 @@ namespace FileSharing
 
         private string ClToString(ClientContract cl)
         {
-            return string.Format("[{0}]S:({1}){2}; R:({3}){4}; SIZE:{5}; PATH:{6}", 
+            return string.Format("[{0}]S:({1}){2}; R:({3}){4}; SIZE:{5}; PATH:{6}",
                 cl.id, cl.sender.Id, cl.sender.ClientName, cl.recipient.Id, cl.recipient.ClientName, cl.size, cl.Path);
         }
 

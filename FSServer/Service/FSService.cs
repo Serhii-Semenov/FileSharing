@@ -14,15 +14,23 @@ namespace FSServer.Service
     class FSService : IFSService
     {
         private static List<UserCallback> userList = new List<UserCallback>();
-        private ILogger Log = FileLogger.Instance;
+        private static ILogger Log = FileLogger.Instance;
 
-        public static void Configure(ServiceConfiguration config)
+        static FSService()
         {
             FileLogger.Instance.Initialize("log.txt");
-        } 
+        }
+
+        // didn't work
+        //public static void Configure(ServiceConfiguration config)
+        //{
+        //    FileLogger.Instance.Initialize("log.txt");
+        //}
 
         public void AnswerForRequest(string ip, ClientContract cl)
         {
+            Log.Debug("xxx");
+
             var client = userList.FirstOrDefault(c => c.Id == cl.recipient.Id);
             if (client != null)
             {
