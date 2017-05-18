@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using FSServer.Model;
 using System.ServiceModel;
 using FSServer.Privider;
 using System.Linq;
 using System.Threading.Tasks;
 using Logger;
-
 
 
 namespace FSServer.Service
@@ -23,19 +20,6 @@ namespace FSServer.Service
         {
             FileLogger.Instance.Initialize("log.txt");
         } 
-
-
-        //public void AnswerForRequest(string ip, int _id)
-        //{
-        //    var client = userList.FirstOrDefault(c => c.Id == _id);
-        //    if (client != null)
-        //    {
-        //        new Task(() =>
-        //        {
-        //            client.Callback.CreateTcpClient(ip);
-        //        }).Start();
-        //    }
-        //}
 
         public void AnswerForRequest(string ip, ClientContract cl)
         {
@@ -58,7 +42,6 @@ namespace FSServer.Service
         {
             // Find Client
             var client = userList.FirstOrDefault(c => c.Id == cl.sender.Id);
-            //cl.user.ClientName = name; // подменяем логин на того кто скачивает файл ?????????????????????
             if (client != null)
             {
                 new Task(() =>

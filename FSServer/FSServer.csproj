@@ -69,7 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Logger\Logger.csproj">
-      <Project>{f42c6b1a-c6ff-487b-89f6-ff2287b7877d}</Project>
+      <Project>{F42C6B1A-C6FF-487B-89F6-FF2287B7877D}</Project>
       <Name>Logger</Name>
     </ProjectReference>
   </ItemGroup>
