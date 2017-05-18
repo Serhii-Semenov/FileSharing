@@ -346,24 +346,35 @@ namespace FileSharing
             {
                 TcpClient senderTcpClient = new TcpClient();
                 senderTcpClient.Connect(_ep);
+                DispachLog("TcpClient.Connect " + senderTcpClient.Client.RemoteEndPoint);
                 NetworkStream writerStream = senderTcpClient.GetStream();
                 //BinaryFormatter format = new BinaryFormatter();
                 byte[] buf = new byte[1024];
                 int count;
+                DispachLog("Open file");
                 fs = new FileStream(staff.Path, FileMode.Open);
 
+                DispachLog("br = new BinaryReader(fs)");
                 br = new BinaryReader(fs);
+
                 k = fs.Length; // Размер файла
+                DispachLog(" File Length = " + k.ToString());
 
                 long position = fs.Seek(cl.complite, SeekOrigin.Begin);
-                DispachLog(position.ToString());
+                DispachLog("File Seek -> " + position.ToString());
 
+                DispachLog("Start read from file");
                 while((count = br.Read(buf, 0, 1024)) > 0)
                 {
+                    DispachLog("Readed from file: " + count);
                     //br.Read(buf, 0, buf.Length);
+                    DispachLog("Try write to net: ");
                     writerStream.Write(buf, 0, count);
+                    DispachLog("Write to net done");
                     
                 }
+
+                DispachLog("TcpClientInTask(END)");
 
                 // А теперь в цикле по 1024 байта передаём файл
                 //while ((count = br.Read(buf, 0, 1024)) > 0)
@@ -380,12 +391,12 @@ namespace FileSharing
             }
             finally
             {
-                staff.sizecomplite = seekBite; // записанно байт
+                //staff.sizecomplite = seekBite; // записанно байт
                 DispachLog(" seekBite -> " + seekBite.ToString());
-                staff.size = k;
-                staff.complite = (int)(seekBite / (k / (100)));
+                //staff.size = k;
+                //staff.complite = (int)(seekBite / (k / (100)));
 
-                service.UpdateFileForDownload(cl);
+                //service.UpdateFileForDownload(cl);
 
                 br.Close();
                 fs.Close();
@@ -435,6 +446,9 @@ namespace FileSharing
 
         }
 
+        TcpListener recipientListener;
+        // writer поменять местами c READ
+
         /// <summary>
         /// Recipient TcpListener
         /// </summary>
@@ -453,11 +467,12 @@ namespace FileSharing
             {
                 string filename = System.IO.Path.GetFileName(cl.Path);
 
-                TcpListener recipientListener = new TcpListener(_port);
+                recipientListener = new TcpListener(_port);
                 // проверить TcpListener != null - НЕПОНЯЛ КАК?
 
                 recipientListener.Start();
                 TcpClient recipient = recipientListener.AcceptTcpClient();
+                DispachLog("Connect done from: " + recipient.Client.RemoteEndPoint);
                 NetworkStream readerStream = recipient.GetStream();
                 // BinaryFormatter outformat = new BinaryFormatter();
                 fs = cl.sizecomplite == 0 ?
@@ -470,25 +485,37 @@ namespace FileSharing
 
                 byte[] buf = new byte[1024];
 
+                DispachLog("Try to read from net");
+
                 while (readerStream.CanRead)
                 {
+                    DispachLog("Begin read from net");
                     int readedBytes = readerStream.Read(buf, 0, buf.Length);
+                    DispachLog("Readed from net: " + readedBytes);
                     bw.Write(buf, 0, readedBytes);
+                    DispachLog("Writed in file done"); 
                 }
-                // когда и как он поймет что произошел конец файла
+                DispachLog("ListenerAcceptInTask(END)");
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, i.ToString());
+               // MessageBox.Show(ex.Message, i.ToString());
                 //throw;
             }
             finally
             {
+
+                DispachLog("FINNALY close streams");
                 // здесь записывать сколько записалось
                 bw.Close();
+
                 fs.Close();
-                Thread.Sleep(5000);
+
+                // проверить  если файл записался до конца то все иначе записать комплит !!!
+
+
+               // Thread.Sleep(5000);
             }
         }
 
