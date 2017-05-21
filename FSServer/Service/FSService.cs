@@ -27,11 +27,15 @@ namespace FSServer.Service
         //    FileLogger.Instance.Initialize("log.txt");
         //}
 
-        public void AnswerForRequest(string ip, ClientContract cl)
+        public void AnswerForRequest(string ip, ClientContract _cl)
         {
-            Log.Debug("xxx");
+            // change sender with recipient
+            ClientContract cl = new Model.ClientContract();
+            cl = _cl;
+            cl.recipient = _cl.sender;
+            cl.sender = _cl.recipient;
 
-            var client = userList.FirstOrDefault(c => c.Id == cl.recipient.Id);
+            var client = userList.FirstOrDefault(c => c.Id == cl.sender.Id);
             if (client != null)
             {
                 new Task(() =>
@@ -46,10 +50,15 @@ namespace FSServer.Service
         /// Инициировать срабатывание Callback метода  
         /// </summary>
         /// <param name="cl"></param>
-        public void RequestFoDownload(ClientContract cl)
+        public void RequestFoDownload(ClientContract _cl)
         {
-            // Find Client
-            var client = userList.FirstOrDefault(c => c.Id == cl.sender.Id);
+            // change sender with recipient
+            ClientContract cl = new Model.ClientContract();
+            cl = _cl;
+            cl.recipient = _cl.sender;
+            cl.sender = _cl.recipient;
+
+            var client = userList.FirstOrDefault(c => c.Id == cl.recipient.Id);
             if (client != null)
             {
                 new Task(() =>

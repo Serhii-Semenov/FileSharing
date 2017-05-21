@@ -21,14 +21,18 @@ namespace FileSharing
 {
     public partial class MainWindow : Window
     {
-        ClientContract staff = null;
         List<ClientContract> forDownLoad;
         BackgroundWorker worker;
+        TcpListener recipientListener;
 
-        int id = 0;
-        string name = "";
+        private int id { get; set; }
+        private string name { get; set; }
+        public int Port { get; set; }
+
         FSServiceClient service;
         ILogger Log;
+
+        private bool LogInfo { get; set; }
 
         public MainWindow()
         {
@@ -41,6 +45,7 @@ namespace FileSharing
             ToLoginView();
 
             // Initialize Logger
+            LogInfo = true;
             Log = WPFLogger.Instance;
             WPFLogger.Instance.Initialize((ListBox)lbxLOG);
 
@@ -50,6 +55,9 @@ namespace FileSharing
             worker.DoWork += new DoWorkEventHandler(worker_DoWork);
             worker.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+
+            // PORT
+            Port = 42009;
         }
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -249,10 +257,8 @@ namespace FileSharing
                     UpdateChat();
                 };
 
-
                 callback.TcpListenerAcceptEven += Callback_TcpListenerAccept;
                 callback.CreateTcpClientEven += Callback_CreateTcpClient;
-
 
                 service = new FSServiceClient(new InstanceContext(callback));
                 id = add ? (service.CreateAccount(tbLogin.Text, tbPassword.Text, tbMail.Text)) : (service.Login(tbLogin.Text, tbPassword.Text));
@@ -261,8 +267,6 @@ namespace FileSharing
                 ClientRoomCore.Status = ClientStatus.Online;
                 GetPlayers();
                 UpdateChat();
-
-                // Initialize List<ClientContract> forDownLoad;
                 InitForDownload();
             }
             catch (Exception err)
@@ -280,15 +284,12 @@ namespace FileSharing
                 lbxChat.Items.Add(v);
         }
 
-        private void Callback_CreateTcpClient(string obj, ClientContract cl)
+        private void Callback_CreateTcpClient(string addr, ClientContract cl)
         {
-            Log.Debug(string.Format("Callback_CreateTcpClient({0}, {1}) ", obj, ClToString(cl)));
-
-            string str = (string)obj;
-            lbxLOG.Items.Add("AnswerForRequest - object -> " + str);
+            Log.Debug(string.Format("Callback_CreateTcpClient({0}, {1}) ", addr, ClientContractToString(cl)));
 
             // parse to EndPoint
-            string[] ipport = str.Split(':');
+            string[] ipport = addr.Split(':');
 
             int port;
             IPAddress IPAddr;
@@ -306,10 +307,6 @@ namespace FileSharing
 
             IPEndPoint ipEndPoint = new IPEndPoint(IPAddr, port);
 
-
-            //
-            // TODO
-            // ...
             try
             {
                 new Task(() =>
@@ -320,13 +317,7 @@ namespace FileSharing
             catch (Exception err) { MessageBox.Show(err.Message); }
         }
 
-        private void DispachLog(string s)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                Log.Debug(s);
-            }));
-        }
+
 
         /// <summary>
         /// Sender TCP Client
@@ -337,22 +328,22 @@ namespace FileSharing
         {
             DispachLog("TcpClientInTask(inside)" + _ep.ToString() + " " + cl.ToString());
 
-            long seekBite = 0;
-
+            TcpClient senderTcpClient = null;
             FileStream fs = null;
             BinaryReader br = null;
+            byte[] buf = new byte[1024];
             long k = 0;
+
             try
             {
-                TcpClient senderTcpClient = new TcpClient();
+                senderTcpClient = new TcpClient();
                 senderTcpClient.Connect(_ep);
                 DispachLog("TcpClient.Connect " + senderTcpClient.Client.RemoteEndPoint);
                 NetworkStream writerStream = senderTcpClient.GetStream();
-                //BinaryFormatter format = new BinaryFormatter();
-                byte[] buf = new byte[1024];
+                
                 int count;
                 DispachLog("Open file");
-                fs = new FileStream(staff.Path, FileMode.Open);
+                fs = new FileStream(cl.Path, FileMode.Open);
 
                 DispachLog("br = new BinaryReader(fs)");
                 br = new BinaryReader(fs);
@@ -385,7 +376,7 @@ namespace FileSharing
             finally
             {
                 //staff.sizecomplite = seekBite; // записанно байт
-                DispachLog(" seekBite -> " + seekBite.ToString());
+                //DispachLog(" seekBite -> " + seekBite.ToString());
                 //staff.size = k;
                 //staff.complite = (int)(seekBite / (k / (100)));
 
@@ -396,21 +387,18 @@ namespace FileSharing
             }
         }
 
-        private void Callback_TcpListenerAccept(ClientContract clientt)
+        private void Callback_TcpListenerAccept(ClientContract cl)
         {
+            // 
+            Log.Info("This is sender - " + cl.sender.ClientName);
+            Log.Info("I will try to send file for -> " + cl.recipient.ClientName);
+            Log.Info(" path: " + cl.Path);
 
-            lbxLOG.Items.Add("sender - " + clientt.sender.ClientName + " & rec.-" + clientt.recipient.ClientName + " path: " + clientt.Path);
-            lbxLOG.Items.Add("sender - " + clientt.sender.ClientName);
+            string ip = Dns.Resolve(Dns.GetHostName()).AddressList.Last() + ":" + Port++.ToString();
+            Log.Info("Мой IP - " + ip);
 
-            // **********
-            //string ip = "127.0.0.1:42009";
-            //string ip = "10.6.6.64:42009";
-            int p = 42009;
-            string ip = Dns.Resolve(Dns.GetHostName()).AddressList.Last() + ":" + p++.ToString();
-            // **********
-
-            service.AnswerForRequest(ip, clientt);
-            Log.Info("TCP Listener Accept Start! " + ip + " - " + clientt.recipient.ClientName);
+            service.AnswerForRequest(ip, cl);
+            Log.Info("TCP Listener Accept Start! " + ip + " - " + cl.recipient.ClientName);
 
             string[] ipport = ip.Split(':');
 
@@ -432,17 +420,16 @@ namespace FileSharing
             {
                 new Task(() =>
                     {
-                        ListenerAcceptInTask(IPAddr, port, clientt);
+                        ListenerAcceptInTask(IPAddr, port, cl);
                     }).Start();
                 Log.Debug("Callback_TcpListenerAccept " + IPAddr.ToString() + " " + port.ToString()
-                    + " " + ClToString(clientt));
+                    + " " + ClientContractToString(cl));
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
 
         }
 
-        TcpListener recipientListener;
-        // writer поменять местами c READ
+
 
         /// <summary>
         /// Recipient TcpListener
@@ -452,33 +439,28 @@ namespace FileSharing
         /// <param name="cl"></param>
         private void ListenerAcceptInTask(IPAddress _IPAddr, int _port, ClientContract cl)
         {
-            DispachLog("ListenerAcceptInTask(inside) " + _IPAddr.ToString() + " " + _port.ToString() + " " + ClToString(cl));
+            DispachLog("ListenerAcceptInTask(inside) " + _IPAddr.ToString() + " " + _port.ToString() + " " + ClientContractToString(cl));
 
             FileStream fs = null;
             BinaryWriter bw = null;
-            int i = 0;
-            int count;
+            byte[] buf = new byte[1024];
+
             try
             {
                 string filename = System.IO.Path.GetFileName(cl.Path);
 
-                recipientListener = new TcpListener(_port);
-                // проверить TcpListener != null - НЕПОНЯЛ КАК?
+                recipientListener = new TcpListener(_IPAddr, _port);
 
                 recipientListener.Start();
                 TcpClient recipient = recipientListener.AcceptTcpClient();
                 DispachLog("Connect done from: " + recipient.Client.RemoteEndPoint);
+
                 NetworkStream readerStream = recipient.GetStream();
-                // BinaryFormatter outformat = new BinaryFormatter();
                 fs = cl.sizecomplite == 0 ?
                     new FileStream(filename, FileMode.OpenOrCreate) :
                     new FileStream(filename, FileMode.Append);
 
                 bw = new BinaryWriter(fs);
-
-                //count = (int)cl.size;
-
-                byte[] buf = new byte[1024];
 
                 DispachLog("Try to read from net");
 
@@ -505,13 +487,8 @@ namespace FileSharing
                 DispachLog("FINNALY ListenerAcceptInTask");
                 // здесь записывать сколько записалось
                 bw.Close();
-
                 fs.Close();
-
-                // проверить  если файл записался до конца то все иначе записать комплит !!!
-
-
-               // Thread.Sleep(5000);
+                Thread.Sleep(5000);
             }
         }
 
@@ -626,16 +603,23 @@ namespace FileSharing
 
         private void btnDownload_Click(object sender, RoutedEventArgs e)
         {
-            // TODO ProgressBar
+            string path, senderName;  // sender params
+            try
+            {
+                senderName = lbxClients.SelectedItem.ToString();
+                path = lbxPaths.SelectedItem.ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
 
-            string username = lbxClients.SelectedItem.ToString();
-            string path = lbxPaths.SelectedItem.ToString();
+            Log.Info(string.Format("Скачать у пользователя - {0}", senderName));
+            Log.Info(string.Format("Файл - {0}", path));
 
-            lbxLOG.Items.Add("Скачать у user - " + lbxClients.SelectedItem);
-            lbxLOG.Items.Add("Файл path - " + lbxPaths.SelectedItem);
-
-            var client = ClientRoomCore.Clients.Clients.FirstOrDefault(c => c.Value.ClientName == username);
-            staff = new ClientContract()
+            var client = ClientRoomCore.Clients.Clients.FirstOrDefault(c => c.Value.ClientName == senderName);
+            ClientContract cl = new ClientContract()
             {
                 sender = client.Value,
                 recipient = new Client()
@@ -655,8 +639,8 @@ namespace FileSharing
             //Log.Debug(string.Format("service.AddFileToDownloadTable({0})", ClToString(staff)));
 
             // RequestForDownload
-            service.RequestFoDownload(staff);
-            Log.Debug(string.Format("service.RequestFoDownload({0})", ClToString(staff)));
+            service.RequestFoDownload(cl);
+            Log.Debug(string.Format("service.RequestFoDownload({0})", ClientContractToString(cl)));
         }
 
         private void btnUpload_Click(object sender, RoutedEventArgs e)
@@ -717,10 +701,18 @@ namespace FileSharing
             UpdateChat();
         }
 
-        private string ClToString(ClientContract cl)
+        private string ClientContractToString(ClientContract cl)
         {
             return string.Format("[{0}]S:({1}){2}; R:({3}){4}; SIZE:{5}; PATH:{6}",
                 cl.id, cl.sender.Id, cl.sender.ClientName, cl.recipient.Id, cl.recipient.ClientName, cl.size, cl.Path);
+        }
+
+        private void DispachLog(string s)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                Log.Debug(s);
+            }));
         }
 
     }
