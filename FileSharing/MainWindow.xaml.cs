@@ -371,22 +371,15 @@ namespace FileSharing
                     DispachLog("Try write to net: ");
                     writerStream.Write(buf, 0, count);
                     DispachLog("Write to net done");
-                    
+                   
                 }
-
                 DispachLog("TcpClientInTask(END)");
-
-                // А теперь в цикле по 1024 байта передаём файл
-                //while ((count = br.Read(buf, 0, 1024)) > 0)
-                //{
-                //    format.Serialize(writerStream, buf);
-                //    seekBite++;
-                //}
             }
             catch (Exception err)
             {
+                DispachLog(err.Message);
                 // ошибка при передачи файла в поток
-                MessageBox.Show(err.Message, seekBite.ToString());
+                // MessageBox.Show(err.Message, seekBite.ToString());
                 // throw;
             }
             finally
@@ -411,7 +404,9 @@ namespace FileSharing
 
             // **********
             //string ip = "127.0.0.1:42009";
-            string ip = "10.6.6.64:42009";
+            //string ip = "10.6.6.64:42009";
+            int p = 42009;
+            string ip = Dns.Resolve(Dns.GetHostName()).AddressList.Last() + ":" + p++.ToString();
             // **********
 
             service.AnswerForRequest(ip, clientt);
@@ -500,13 +495,14 @@ namespace FileSharing
             }
             catch (Exception ex)
             {
+                DispachLog(ex.Message);
                // MessageBox.Show(ex.Message, i.ToString());
                 //throw;
             }
             finally
             {
 
-                DispachLog("FINNALY close streams");
+                DispachLog("FINNALY ListenerAcceptInTask");
                 // здесь записывать сколько записалось
                 bw.Close();
 
