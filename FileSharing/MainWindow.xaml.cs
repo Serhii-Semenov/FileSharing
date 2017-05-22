@@ -390,9 +390,11 @@ namespace FileSharing
         private void Callback_TcpListenerAccept(ClientContract cl)
         {
             // 
+            Log.Info("Этот медод должен сработать у отправителя");
             Log.Info("This is sender - " + cl.sender.ClientName);
             Log.Info("I will try to send file for -> " + cl.recipient.ClientName);
             Log.Info(" path: " + cl.Path);
+
 
             string ip = Dns.Resolve(Dns.GetHostName()).AddressList.Last() + ":" + Port++.ToString();
             Log.Info("Мой IP - " + ip);
@@ -634,9 +636,12 @@ namespace FileSharing
             };
 
             // Add staff to DB
-            //staff.id = service.AddFileToDownloadTable(staff);
+            cl.id = service.AddFileToDownloadTable(cl);
+            // TODO cl.id = -1
+            // if (cl.id==-1) // -> такой файл уже есть
+
             Log.Debug("btnDownload_Click()");
-            //Log.Debug(string.Format("service.AddFileToDownloadTable({0})", ClToString(staff)));
+            Log.Debug(string.Format("service.AddFileToDownloadTable({0})", ClientContractToString(cl)));
 
             // RequestForDownload
             service.RequestFoDownload(cl);
