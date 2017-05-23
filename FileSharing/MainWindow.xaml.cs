@@ -50,6 +50,7 @@ namespace FileSharing
             WPFLogger.Instance.Initialize((ListBox)lbxLOG);
 
             // Initialize worker
+          
             worker = new BackgroundWorker(); // variable declared in the class
             worker.WorkerReportsProgress = true;
             worker.DoWork += new DoWorkEventHandler(worker_DoWork);
@@ -62,22 +63,22 @@ namespace FileSharing
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.Title += " DONE";
+            MessageBox.Show("File download is complite");
         }
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            for (int j = 0; j <= 100; j++)
-            {
-                worker.ReportProgress(j);
-                Title += j.ToString();
-                Thread.Sleep(50);
-            }
+            //for (int j = 0; j <= 100; j++)
+            //{
+            //    worker.ReportProgress(j);
+            //    Title += j.ToString();
+            //    Thread.Sleep(50);
+            //}
         }
 
         void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            // searchProgressBar.Value = e.ProgressPercentage;
+            pbStatus.Value = Math.Min((sbyte)e.ProgressPercentage, (sbyte)100);
         }
 
         private void InitForDownload()
@@ -328,63 +329,130 @@ namespace FileSharing
         {
             DispachLog("TcpClientInTask(inside)" + _ep.ToString() + " " + cl.ToString());
 
-            TcpClient senderTcpClient = null;
+
             FileStream fs = null;
-            BinaryReader br = null;
+            BinaryWriter bw = null;
             byte[] buf = new byte[1024];
-            long k = 0;
 
             try
             {
-                senderTcpClient = new TcpClient();
-                senderTcpClient.Connect(_ep);
-                DispachLog("TcpClient.Connect " + senderTcpClient.Client.RemoteEndPoint);
-                NetworkStream writerStream = senderTcpClient.GetStream();
-                
-                int count;
-                DispachLog("Open file");
-                fs = new FileStream(cl.Path, FileMode.Open);
+                string filename = System.IO.Path.GetFileName(cl.Path);
 
-                DispachLog("br = new BinaryReader(fs)");
-                br = new BinaryReader(fs);
+                recipientListener = new TcpListener(_ep);
 
-                k = fs.Length; // Размер файла
-                DispachLog(" File Length = " + k.ToString());
+                recipientListener.Start();
+                TcpClient recipient = recipientListener.AcceptTcpClient();
+                DispachLog("Connect done from: " + recipient.Client.RemoteEndPoint);
 
-                long position = fs.Seek(cl.complite, SeekOrigin.Begin);
-                DispachLog("File Seek -> " + position.ToString());
+                NetworkStream readerStream = recipient.GetStream();
+                fs = cl.sizecomplite == 0 ?
+                    new FileStream(filename, FileMode.OpenOrCreate) :
+                    new FileStream(filename, FileMode.Append);
 
-                DispachLog("Start read from file");
-                while((count = br.Read(buf, 0, 1024)) > 0)
+                bw = new BinaryWriter(fs);
+
+                DispachLog("Try to read from net");
+
+                //int progress = 0;
+
+                while (readerStream.CanRead)
                 {
-                    DispachLog("Readed from file: " + count);
-                    //br.Read(buf, 0, buf.Length);
-                    DispachLog("Try write to net: ");
-                    writerStream.Write(buf, 0, count);
-                    DispachLog("Write to net done");
-                   
+                    DispachLog("Begin read from net");
+                    int readedBytes = readerStream.Read(buf, 0, buf.Length);
+                    DispachLog("Readed from net: " + readedBytes);
+                    bw.Write(buf, 0, readedBytes);
+                    DispachLog("Writed in file done");
+
+                    // pbStatus
+                    if (pbStatus.Value <= 100)
+                        Dispatcher.Invoke(new Action(() =>
+                        {
+                            pbStatus.Minimum = 1;
+
+                        }));
+
+
+
                 }
-                DispachLog("TcpClientInTask(END)");
+                DispachLog("ListenerAcceptInTask(END)");
+
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                DispachLog(err.Message);
-                // ошибка при передачи файла в поток
-                // MessageBox.Show(err.Message, seekBite.ToString());
-                // throw;
+                DispachLog(ex.Message);
+                // MessageBox.Show(ex.Message, i.ToString());
+                //throw;
             }
             finally
             {
-                //staff.sizecomplite = seekBite; // записанно байт
-                //DispachLog(" seekBite -> " + seekBite.ToString());
-                //staff.size = k;
-                //staff.complite = (int)(seekBite / (k / (100)));
 
-                //service.UpdateFileForDownload(cl);
-
-                br.Close();
+                DispachLog("FINNALY ListenerAcceptInTask");
+                // здесь записывать сколько записалось
+                bw.Close();
                 fs.Close();
+                Thread.Sleep(5000);
             }
+
+            // -----------------------------
+            //TcpClient senderTcpClient = null;
+            //FileStream fs = null;
+            //BinaryReader br = null;
+            //byte[] buf = new byte[1024];
+            //long k = 0;
+
+            //try
+            //{
+            //    senderTcpClient = new TcpClient();
+            //    senderTcpClient.Connect(_ep);
+            //    DispachLog("TcpClient.Connect " + senderTcpClient.Client.RemoteEndPoint);
+            //    NetworkStream writerStream = senderTcpClient.GetStream();
+
+            //    int count;
+            //    DispachLog("Open file");
+            //    fs = new FileStream(cl.Path, FileMode.Open);
+
+            //    DispachLog("br = new BinaryReader(fs)");
+            //    br = new BinaryReader(fs);
+
+            //    k = fs.Length; // Размер файла
+            //    DispachLog(" File Length = " + k.ToString());
+
+            //    long position = fs.Seek(cl.complite, SeekOrigin.Begin);
+            //    DispachLog("File Seek -> " + position.ToString());
+
+            //    DispachLog("Start read from file");
+            //    while((count = br.Read(buf, 0, 1024)) > 0)
+            //    {
+            //        DispachLog("Readed from file: " + count);
+            //        //br.Read(buf, 0, buf.Length);
+            //        DispachLog("Try write to net: ");
+            //        writerStream.Write(buf, 0, count);
+            //        DispachLog("Write to net done");
+
+            //        // ProgressBar
+
+            //    }
+            //    DispachLog("TcpClientInTask(END)");
+            //}
+            //catch (Exception err)
+            //{
+            //    DispachLog(err.Message);
+            //    // ошибка при передачи файла в поток
+            //    // MessageBox.Show(err.Message, seekBite.ToString());
+            //    // throw;
+            //}
+            //finally
+            //{
+            //    //staff.sizecomplite = seekBite; // записанно байт
+            //    //DispachLog(" seekBite -> " + seekBite.ToString());
+            //    //staff.size = k;
+            //    //staff.complite = (int)(seekBite / (k / (100)));
+
+            //    //service.UpdateFileForDownload(cl);
+
+            //    br.Close();
+            //    fs.Close();
+            //}
         }
 
         private void Callback_TcpListenerAccept(ClientContract cl)
@@ -399,7 +467,8 @@ namespace FileSharing
             string ip = Dns.Resolve(Dns.GetHostName()).AddressList.Last() + ":" + Port++.ToString();
             Log.Info("Мой IP - " + ip);
 
-            service.AnswerForRequest(ip, cl);
+            // TODO передалать на -> EP !
+            service.AnswerForRequest(ip, cl); // - отправка callback получателю
             Log.Info("TCP Listener Accept Start! " + ip + " - " + cl.recipient.ClientName);
 
             string[] ipport = ip.Split(':');
@@ -417,6 +486,11 @@ namespace FileSharing
                 MessageBox.Show("Неверный IP!");
                 return;
             }
+
+            // pbStatus
+            pbStatus.Maximum = 100;
+            pbStatus.Minimum = 0;
+            pbStatus.Value = 0;
 
             try
             {
@@ -443,55 +517,129 @@ namespace FileSharing
         {
             DispachLog("ListenerAcceptInTask(inside) " + _IPAddr.ToString() + " " + _port.ToString() + " " + ClientContractToString(cl));
 
+            TcpClient senderTcpClient = null;
             FileStream fs = null;
-            BinaryWriter bw = null;
+            BinaryReader br = null;
             byte[] buf = new byte[1024];
+            long k = 0;
 
             try
             {
-                string filename = System.IO.Path.GetFileName(cl.Path);
+                senderTcpClient = new TcpClient();
+                senderTcpClient.Connect(_ep);
+                DispachLog("TcpClient.Connect " + senderTcpClient.Client.RemoteEndPoint);
+                NetworkStream writerStream = senderTcpClient.GetStream();
 
-                recipientListener = new TcpListener(_IPAddr, _port);
+                int count;
+                DispachLog("Open file");
+                fs = new FileStream(cl.Path, FileMode.Open);
 
-                recipientListener.Start();
-                TcpClient recipient = recipientListener.AcceptTcpClient();
-                DispachLog("Connect done from: " + recipient.Client.RemoteEndPoint);
+                DispachLog("br = new BinaryReader(fs)");
+                br = new BinaryReader(fs);
 
-                NetworkStream readerStream = recipient.GetStream();
-                fs = cl.sizecomplite == 0 ?
-                    new FileStream(filename, FileMode.OpenOrCreate) :
-                    new FileStream(filename, FileMode.Append);
+                k = fs.Length; // Размер файла
+                DispachLog(" File Length = " + k.ToString());
 
-                bw = new BinaryWriter(fs);
+                long position = fs.Seek(cl.complite, SeekOrigin.Begin);
+                DispachLog("File Seek -> " + position.ToString());
 
-                DispachLog("Try to read from net");
-
-                while (readerStream.CanRead)
+                DispachLog("Start read from file");
+                while ((count = br.Read(buf, 0, 1024)) > 0)
                 {
-                    DispachLog("Begin read from net");
-                    int readedBytes = readerStream.Read(buf, 0, buf.Length);
-                    DispachLog("Readed from net: " + readedBytes);
-                    bw.Write(buf, 0, readedBytes);
-                    DispachLog("Writed in file done"); 
-                }
-                DispachLog("ListenerAcceptInTask(END)");
+                    DispachLog("Readed from file: " + count);
+                    //br.Read(buf, 0, buf.Length);
+                    DispachLog("Try write to net: ");
+                    writerStream.Write(buf, 0, count);
+                    DispachLog("Write to net done");
 
+                    // ProgressBar
+
+                }
+                DispachLog("TcpClientInTask(END)");
             }
-            catch (Exception ex)
+            catch (Exception err)
             {
-                DispachLog(ex.Message);
-               // MessageBox.Show(ex.Message, i.ToString());
-                //throw;
+                DispachLog(err.Message);
+                // ошибка при передачи файла в поток
+                // MessageBox.Show(err.Message, seekBite.ToString());
+                // throw;
             }
             finally
             {
+                //staff.sizecomplite = seekBite; // записанно байт
+                //DispachLog(" seekBite -> " + seekBite.ToString());
+                //staff.size = k;
+                //staff.complite = (int)(seekBite / (k / (100)));
 
-                DispachLog("FINNALY ListenerAcceptInTask");
-                // здесь записывать сколько записалось
-                bw.Close();
+                //service.UpdateFileForDownload(cl);
+
+                br.Close();
                 fs.Close();
-                Thread.Sleep(5000);
             }
+            // ----------------------------
+
+            //FileStream fs = null;
+            //BinaryWriter bw = null;
+            //byte[] buf = new byte[1024];
+
+            //try
+            //{
+            //    string filename = System.IO.Path.GetFileName(cl.Path);
+
+            //    recipientListener = new TcpListener(_IPAddr, _port);
+
+            //    recipientListener.Start();
+            //    TcpClient recipient = recipientListener.AcceptTcpClient();
+            //    DispachLog("Connect done from: " + recipient.Client.RemoteEndPoint);
+
+            //    NetworkStream readerStream = recipient.GetStream();
+            //    fs = cl.sizecomplite == 0 ?
+            //        new FileStream(filename, FileMode.OpenOrCreate) :
+            //        new FileStream(filename, FileMode.Append);
+
+            //    bw = new BinaryWriter(fs);
+
+            //    DispachLog("Try to read from net");
+
+            //    //int progress = 0;
+
+            //    while (readerStream.CanRead)
+            //    {
+            //        DispachLog("Begin read from net");
+            //        int readedBytes = readerStream.Read(buf, 0, buf.Length);
+            //        DispachLog("Readed from net: " + readedBytes);
+            //        bw.Write(buf, 0, readedBytes);
+            //        DispachLog("Writed in file done");
+
+            //        // pbStatus
+            //        if (pbStatus.Value<=100)
+            //            Dispatcher.Invoke(new Action(() =>
+            //        {
+            //            pbStatus.Minimum = 1;
+                        
+            //        }));
+
+
+
+            //    }
+            //    DispachLog("ListenerAcceptInTask(END)");
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    DispachLog(ex.Message);
+            //   // MessageBox.Show(ex.Message, i.ToString());
+            //    //throw;
+            //}
+            //finally
+            //{
+
+            //    DispachLog("FINNALY ListenerAcceptInTask");
+            //    // здесь записывать сколько записалось
+            //    bw.Close();
+            //    fs.Close();
+            //    Thread.Sleep(5000);
+            //}
         }
 
         private void UpdateClientsList()
@@ -639,6 +787,10 @@ namespace FileSharing
             cl.id = service.AddFileToDownloadTable(cl);
             // TODO cl.id = -1
             // if (cl.id==-1) // -> такой файл уже есть
+
+            cnvProgress.Visibility = Visibility.Visible;
+            
+
 
             Log.Debug("btnDownload_Click()");
             Log.Debug(string.Format("service.AddFileToDownloadTable({0})", ClientContractToString(cl)));
