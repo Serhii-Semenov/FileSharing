@@ -25,4 +25,10 @@
     </xs:sequence>
   </xs:complexType>
   <xs:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring" />
+  <xs:complexType name="ArrayOfunsignedShort">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="unsignedShort" type="xs:unsignedShort" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfunsignedShort" nillable="true" type="tns:ArrayOfunsignedShort" />
 </xs:schema>

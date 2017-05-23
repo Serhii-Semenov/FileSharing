@@ -2,6 +2,7 @@
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import namespace="http://schemas.datacontract.org/2004/07/FSServer.Model" />
   <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import namespace="http://schemas.datacontract.org/2004/07/System.Net" />
   <xs:element name="CreateAccount">
     <xs:complexType>
       <xs:sequence>
@@ -126,8 +127,8 @@
   <xs:element name="AnswerForRequest">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="ip" nillable="true" type="xs:string" />
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q5:ClientContract" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/System.Net" minOccurs="0" name="ep" nillable="true" type="q5:IPEndPoint" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q6:ClientContract" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -146,14 +147,14 @@
   <xs:element name="GetListForDownloadResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="GetListForDownloadResult" nillable="true" type="q6:ArrayOfClientContract" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="GetListForDownloadResult" nillable="true" type="q7:ArrayOfClientContract" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="AddFileToDownloadTable">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q7:ClientContract" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q8:ClientContract" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -167,7 +168,7 @@
   <xs:element name="UpdateFileForDownload">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q8:ClientContract" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q9:ClientContract" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -179,21 +180,21 @@
   <xs:element name="UpdateClientList">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="clients" nillable="true" type="q9:ClientList" />
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="clients" nillable="true" type="q10:ClientList" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="UpdateChat">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="clients" nillable="true" type="q10:ClientList" />
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="clients" nillable="true" type="q11:ClientList" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="TcpListenerAccept">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q11:ClientContract" />
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q12:ClientContract" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -207,8 +208,8 @@
   <xs:element name="CreateTcpClient">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="address" nillable="true" type="xs:string" />
-        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q12:ClientContract" />
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/System.Net" minOccurs="0" name="ep" nillable="true" type="q13:IPEndPoint" />
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/FSServer.Model" minOccurs="0" name="cl" nillable="true" type="q14:ClientContract" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

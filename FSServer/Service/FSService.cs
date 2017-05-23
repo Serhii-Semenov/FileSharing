@@ -5,7 +5,7 @@ using FSServer.Privider;
 using System.Linq;
 using System.Threading.Tasks;
 using Logger;
-
+using System.Net;
 
 namespace FSServer.Service
 {
@@ -27,14 +27,14 @@ namespace FSServer.Service
         //    FileLogger.Instance.Initialize("log.txt");
         //}
 
-        public void AnswerForRequest(string ip, ClientContract cl)
+        public void AnswerForRequest(IPEndPoint ep, ClientContract cl)
         {
             var client = userList.FirstOrDefault(c => c.Id == cl.recipient.Id);
             if (client != null)
             {
                 new Task(() =>
                 {
-                    client.Callback.CreateTcpClient(ip, cl);
+                    client.Callback.CreateTcpClient(ep, cl);
                 }).Start();
             }
         }

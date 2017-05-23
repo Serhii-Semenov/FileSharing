@@ -22,7 +22,6 @@ namespace FileSharing
     public partial class MainWindow : Window
     {
         List<ClientContract> forDownLoad;
-        BackgroundWorker worker;
         TcpListener recipientListener;
 
         private int id { get; set; }
@@ -49,36 +48,8 @@ namespace FileSharing
             Log = WPFLogger.Instance;
             WPFLogger.Instance.Initialize((ListBox)lbxLOG);
 
-            // Initialize worker
-          
-            worker = new BackgroundWorker(); // variable declared in the class
-            worker.WorkerReportsProgress = true;
-            worker.DoWork += new DoWorkEventHandler(worker_DoWork);
-            worker.ProgressChanged += new ProgressChangedEventHandler(backgroundWorker1_ProgressChanged);
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
-
             // PORT
             Port = 42009;
-        }
-
-        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            MessageBox.Show("File download is complite");
-        }
-
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            //for (int j = 0; j <= 100; j++)
-            //{
-            //    worker.ReportProgress(j);
-            //    Title += j.ToString();
-            //    Thread.Sleep(50);
-            //}
-        }
-
-        void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            pbStatus.Value = Math.Min((sbyte)e.ProgressPercentage, (sbyte)100);
         }
 
         private void InitForDownload()
@@ -285,40 +256,23 @@ namespace FileSharing
                 lbxChat.Items.Add(v);
         }
 
-        private void Callback_CreateTcpClient(string addr, ClientContract cl)
+        private void Callback_CreateTcpClient(IPEndPoint ep, ClientContract cl)
         {
-            Log.Debug(string.Format("Callback_CreateTcpClient({0}, {1}) ", addr, ClientContractToString(cl)));
+            Log.Debug(string.Format("Callback_CreateTcpClient({0}, {1}) ", ep, ClientContractToString(cl)));
 
-            // parse to EndPoint
-            string[] ipport = addr.Split(':');
 
-            int port;
-            IPAddress IPAddr;
-            if (!int.TryParse(ipport[1], out port))
-            {
-                MessageBox.Show("Неверный потр!");
-                return;
-            }
-
-            if (!IPAddress.TryParse(ipport[0], out IPAddr))
-            {
-                MessageBox.Show("Неверный IP!");
-                return;
-            }
-
-            IPEndPoint ipEndPoint = new IPEndPoint(IPAddr, port);
+            cnvProgress.Visibility = Visibility.Visible;
+            pbStatus.Value = 0;
 
             try
             {
                 new Task(() =>
                 {
-                    TcpClientInTask(ipEndPoint, cl);
+                    TcpClientInTask(ep, cl);
                 }).Start();
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
         }
-
-
 
         /// <summary>
         /// Sender TCP Client
@@ -328,7 +282,6 @@ namespace FileSharing
         private void TcpClientInTask(IPEndPoint _ep, ClientContract cl)
         {
             DispachLog("TcpClientInTask(inside)" + _ep.ToString() + " " + cl.ToString());
-
 
             FileStream fs = null;
             BinaryWriter bw = null;
@@ -364,15 +317,10 @@ namespace FileSharing
                     DispachLog("Writed in file done");
 
                     // pbStatus
-                    if (pbStatus.Value <= 100)
-                        Dispatcher.Invoke(new Action(() =>
-                        {
-                            pbStatus.Minimum = 1;
-
-                        }));
-
-
-
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        if (pbStatus.Value <= 100) pbStatus.Value++;
+                    }));
                 }
                 DispachLog("ListenerAcceptInTask(END)");
 
@@ -464,28 +412,14 @@ namespace FileSharing
             Log.Info(" path: " + cl.Path);
 
 
-            string ip = Dns.Resolve(Dns.GetHostName()).AddressList.Last() + ":" + Port++.ToString();
-            Log.Info("Мой IP - " + ip);
-
+            // string ip = Dns.Resolve(Dns.GetHostName()).AddressList.Last(); // + ":" + Port++.ToString();
+            
+            //IPAddress ipAddr = Dns.Get
+            IPEndPoint ep = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[0], Port);
+            Log.Info("Мой End Point -> " + ep);
             // TODO передалать на -> EP !
-            service.AnswerForRequest(ip, cl); // - отправка callback получателю
-            Log.Info("TCP Listener Accept Start! " + ip + " - " + cl.recipient.ClientName);
-
-            string[] ipport = ip.Split(':');
-
-            int port;
-            IPAddress IPAddr;
-            if (!int.TryParse(ipport[1], out port))
-            {
-                MessageBox.Show("Неверный потр!");
-                return;
-            }
-
-            if (!IPAddress.TryParse(ipport[0], out IPAddr))
-            {
-                MessageBox.Show("Неверный IP!");
-                return;
-            }
+            service.AnswerForRequest(ep, cl); // - отправка callback получателю
+            Log.Info("TCP Listener Accept Start! " + ep + " - " + cl.recipient.ClientName);
 
             // pbStatus
             pbStatus.Maximum = 100;
@@ -496,9 +430,9 @@ namespace FileSharing
             {
                 new Task(() =>
                     {
-                        ListenerAcceptInTask(IPAddr, port, cl);
+                        ListenerAcceptInTask(ep, cl);
                     }).Start();
-                Log.Debug("Callback_TcpListenerAccept " + IPAddr.ToString() + " " + port.ToString()
+                Log.Debug("Callback_TcpListenerAccept " + ep.ToString()
                     + " " + ClientContractToString(cl));
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
@@ -513,9 +447,9 @@ namespace FileSharing
         /// <param name="_IPAddr"></param>
         /// <param name="_port"></param>
         /// <param name="cl"></param>
-        private void ListenerAcceptInTask(IPAddress _IPAddr, int _port, ClientContract cl)
+        private void ListenerAcceptInTask(IPEndPoint ep, ClientContract cl)
         {
-            DispachLog("ListenerAcceptInTask(inside) " + _IPAddr.ToString() + " " + _port.ToString() + " " + ClientContractToString(cl));
+            DispachLog("ListenerAcceptInTask(inside) " + ep.ToString() + " " + ClientContractToString(cl));
 
             TcpClient senderTcpClient = null;
             FileStream fs = null;
@@ -526,7 +460,7 @@ namespace FileSharing
             try
             {
                 senderTcpClient = new TcpClient();
-                senderTcpClient.Connect(_ep);
+                senderTcpClient.Connect(ep);
                 DispachLog("TcpClient.Connect " + senderTcpClient.Client.RemoteEndPoint);
                 NetworkStream writerStream = senderTcpClient.GetStream();
 
@@ -788,7 +722,7 @@ namespace FileSharing
             // TODO cl.id = -1
             // if (cl.id==-1) // -> такой файл уже есть
 
-            cnvProgress.Visibility = Visibility.Visible;
+            
             
 
 

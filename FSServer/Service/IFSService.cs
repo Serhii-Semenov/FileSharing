@@ -1,6 +1,7 @@
 ﻿using System.ServiceModel;
 using FSServer.Model;
 using System.Collections.Generic;
+using System.Net;
 
 namespace FSServer.Service
 {
@@ -47,7 +48,7 @@ namespace FSServer.Service
         void RequestFoDownload(ClientContract cl);
 
         [OperationContract]
-        void AnswerForRequest(string ip, ClientContract cl);
+        void AnswerForRequest(IPEndPoint ep, ClientContract cl);
 
         [OperationContract]
         List<ClientContract> GetListForDownload(string _name);

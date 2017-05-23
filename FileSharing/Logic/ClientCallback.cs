@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FileSharing.FSService;
 using System.Net.Sockets;
 using System.ServiceModel;
+using System.Net;
 
 namespace FileSharing.Logic
 {
@@ -13,7 +14,7 @@ namespace FileSharing.Logic
         public event Action<ClientList> UpdateClientsEven;
         public event Action<ClientList> UpdateChatEven;
         public event Action<ClientContract> TcpListenerAcceptEven;
-        public event Action<string, ClientContract> CreateTcpClientEven;
+        public event Action<IPEndPoint, ClientContract> CreateTcpClientEven;
 
         /// <summary>
         /// Обновляет у всех клиентов ListBox с подключенными клиентами 
@@ -54,9 +55,9 @@ namespace FileSharing.Logic
         /// 
         /// </summary>
         /// <param name="address"></param>
-        public void CreateTcpClient(string address, ClientContract cl)
+        public void CreateTcpClient(IPEndPoint ep, ClientContract cl)
         {
-            if (CreateTcpClientEven != null) CreateTcpClientEven(address, cl);
+            if (CreateTcpClientEven != null) CreateTcpClientEven(ep, cl);
             //StartDownLoadIF?.Invoke(address);
         }
 

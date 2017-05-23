@@ -27,6 +27,8 @@
     <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="9e5eb44d-6dff-4cb4-ad82-d7093898b5b6" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
     <MetadataFile FileName="FSServer.Model.xsd" MetadataType="Schema" ID="ada537e5-da52-4ea0-9236-eb59ae9fa10c" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
     <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="4bb6e7c0-d788-4aab-9185-1e74fb91c294" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="System.Net.xsd" MetadataType="Schema" ID="e79d8949-b37a-4938-b28a-b083822ac017" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="System.Net.Sockets.xsd" MetadataType="Schema" ID="c9f9ac5e-ffc5-457e-830b-395f029ff01d" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

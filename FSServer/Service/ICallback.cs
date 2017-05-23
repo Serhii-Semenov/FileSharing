@@ -1,5 +1,6 @@
 ﻿using System.ServiceModel;
 using FSServer.Model;
+using System.Net;
 
 namespace FSServer.Service
 {
@@ -29,6 +30,6 @@ namespace FSServer.Service
         /// </summary>
         /// <param name="address">IP:PORT Клиента с которого будет скачиваться файл</param>
         [OperationContract(IsOneWay = true)]
-        void CreateTcpClient(string address, ClientContract cl);
+        void CreateTcpClient(IPEndPoint ep, ClientContract cl);
     }
 }
