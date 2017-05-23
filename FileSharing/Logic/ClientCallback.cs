@@ -50,7 +50,6 @@ namespace FileSharing.Logic
             return "10.6.0.34:49453";
         }
 
-
         /// <summary>
         /// 
         /// </summary>
