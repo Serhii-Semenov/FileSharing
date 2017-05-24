@@ -285,10 +285,11 @@ namespace FileSharing
             FileStream fs = null;
             BinaryWriter bw = null;
             byte[] buf = new byte[1024];
+            string filename="";
 
             try
             {
-                string filename = System.IO.Path.GetFileName(cl.Path);
+                filename = System.IO.Path.GetFileName(cl.Path);
 
                 recipientListener = new TcpListener(_ep);
 
@@ -303,6 +304,9 @@ namespace FileSharing
 
                 bw = new BinaryWriter(fs);
 
+                long step = cl.size / 100;
+                long tempSize = 0;
+
                 DispachLog("Try to read from net");
 
                 while (readerStream.CanRead)
@@ -312,15 +316,16 @@ namespace FileSharing
                     DispachLog("Readed from net: " + readedBytes);
                     bw.Write(buf, 0, readedBytes);
                     DispachLog("Writed in file done");
-
-                    // pbStatus
-                    Dispatcher.Invoke(new Action(() =>
+                    if ((tempSize += readedBytes) > step)
                     {
-                        if (pbStatus.Value <= 100) pbStatus.Value++;
-                    }));
+                        tempSize = 0;
+                        Dispatcher.Invoke(new Action(() =>
+                        {
+                            if (pbStatus.Value <= 100) pbStatus.Value = cl.complite++;
+                        }));
+                    }
                 }
                 DispachLog("ListenerAcceptInTask(END)");
-
             }
             catch (Exception ex)
             {
@@ -330,12 +335,15 @@ namespace FileSharing
             }
             finally
             {
-
-                DispachLog("FINNALY ListenerAcceptInTask");
-                // здесь записывать сколько записалось
                 bw.Close();
                 fs.Close();
-                Thread.Sleep(5000);
+                Thread.Sleep(1000);
+
+                // здесь записывать сколько записалось
+                cl.sizecomplite = new System.IO.FileInfo(filename).Length;// записанно байт
+                service.UpdateFileForDownload(cl);
+
+                DispachLog("FINNALY ListenerAcceptInTask");
             }
         }
 
@@ -347,13 +355,14 @@ namespace FileSharing
             Log.Info("I will try to send file for -> " + cl.recipient.ClientName);
             Log.Info(" path: " + cl.Path);
 
-
             // string ip = Dns.Resolve(Dns.GetHostName()).AddressList.Last(); // + ":" + Port++.ToString();
-            
+
             //IPAddress ipAddr = Dns.Get
-            IPEndPoint ep = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[0], Port);
+            IPEndPoint ep = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName()).FirstOrDefault((a) => a.AddressFamily == AddressFamily.InterNetwork), Port);
             Log.Info("Мой End Point -> " + ep);
-            // TODO передалать на -> EP !
+
+            cl.size = new System.IO.FileInfo(cl.Path).Length;
+
             service.AnswerForRequest(ep, cl); // - отправка callback получателю
             Log.Info("TCP Listener Accept Start! " + ep + " - " + cl.recipient.ClientName);
 
@@ -372,10 +381,7 @@ namespace FileSharing
                     + " " + ClientContractToString(cl));
             }
             catch (Exception err) { MessageBox.Show(err.Message); }
-
         }
-
-
 
         /// <summary>
         /// Recipient TcpListener
@@ -430,21 +436,13 @@ namespace FileSharing
             catch (Exception err)
             {
                 DispachLog(err.Message);
-                // ошибка при передачи файла в поток
-                // MessageBox.Show(err.Message, seekBite.ToString());
-                // throw;
             }
             finally
             {
-                //staff.sizecomplite = seekBite; // записанно байт
-                //DispachLog(" seekBite -> " + seekBite.ToString());
-                //staff.size = k;
-                //staff.complite = (int)(seekBite / (k / (100)));
-
-                //service.UpdateFileForDownload(cl);
-
+                Thread.Sleep(2000);
                 br.Close();
                 fs.Close();
+
             }
         }
 
@@ -591,8 +589,12 @@ namespace FileSharing
 
             // Add staff to DB
             cl.id = service.AddFileToDownloadTable(cl);
-            // TODO cl.id = -1
-            // if (cl.id==-1) // -> такой файл уже есть
+            // TODO cl.id = -1 // -> такой файл уже есть
+            if (cl.id == -1)
+            {
+                MessageBox.Show("Такой файл уже есть в добавленных. Воспользуйтесь докачкой!");
+                return;
+            }
 
             Log.Debug("btnDownload_Click()");
             Log.Debug(string.Format("service.AddFileToDownloadTable({0})", ClientContractToString(cl)));

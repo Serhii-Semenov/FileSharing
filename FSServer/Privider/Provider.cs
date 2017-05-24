@@ -126,6 +126,7 @@ namespace FSServer.Privider
         public int AddFileToDownloadTable(ClientContract cl)
         {
             int lastId = -1;
+            if (!ChekFileToDownload(cl)) return -1;
             using (var con = Connect())
             {
                 string myInsertQuery = "INSERT INTO `filefordownload`( `id`, `sender`, `recipient`, `filepath`, `sizecomplite`, `size`, `complite`)";
@@ -145,6 +146,22 @@ namespace FSServer.Privider
                 catch (Exception err) { var v = err; }
             }
             return lastId;
+        }
+
+        public bool ChekFileToDownload(ClientContract cl)
+        {
+            int count = 0;
+            using (var con = Connect())
+            {
+                string myQuery = string.Format("SELECT COUNT(`id`) FROM `filefordownload` WHERE `sender`= {0} AND `recipient`= {1} AND `filepath`= {2}", cl.sender.Id, cl.recipient.Id, cl.Path);
+                var cmd = new MySqlCommand(myQuery, con);
+                try
+                {
+                    Int32.TryParse(cmd.ExecuteScalar().ToString(), out count);
+                }
+                catch (Exception err) { var v = err; }
+            }
+            return count == 0;
         }
 
         public void UpdateFileForDownload(ClientContract cl)
