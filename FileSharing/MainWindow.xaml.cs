@@ -55,14 +55,13 @@ namespace FileSharing
         private void InitForDownload()
         {
             lbxDownloading.Items.Clear();
-            int i = 0;
             try
             {
                 forDownLoad = new List<ClientContract>(service.GetListForDownload(name));
                 foreach (var v in forDownLoad)
                 {
                     WrapPanel wp = new WrapPanel();
-                    wp.Tag = i;
+                    wp.Tag = v.id;
 
                     Label lblClient = new Label() { Content = v.recipient.ClientName };
                     lblClient.Width = 40;
@@ -90,14 +89,13 @@ namespace FileSharing
                         Width = 70,
                         Content = "Resume file",
                         Margin = new Thickness(5),
-                        Tag = i
+                        Tag = v.id
                     };
 
 
                     btnResume.Click += BtnResume_Click;
                     wp.Children.Add(btnResume);
 
-                    i++;
                     lbxDownloading.Items.Add(wp);
                 }
                 if (forDownLoad.Count > 0) exDownloading.IsExpanded = true;
@@ -112,8 +110,7 @@ namespace FileSharing
         private void BtnResume_Click(object sender, RoutedEventArgs e)
         {
             var i = (int)((Button)sender).Tag;
-            ClientContract cl = new ClientContract();
-            cl = forDownLoad[i];
+            ClientContract cl = forDownLoad.FirstOrDefault(a=>a.id == i);
 
             service.RequestFoDownload(cl);
         }
@@ -274,7 +271,7 @@ namespace FileSharing
         }
 
         /// <summary>
-        /// Sender TCP Client
+        /// Recipient TCP Client
         /// </summary>
         /// <param name="_ep">End point</param>
         /// <param name="cl">Client Contract</param>
@@ -340,13 +337,20 @@ namespace FileSharing
                 Thread.Sleep(1000);
 
                 // здесь записывать сколько записалось
-                cl.sizecomplite = new System.IO.FileInfo(filename).Length;// записанно байт
-                service.UpdateFileForDownload(cl);
+                cl.sizecomplite = new System.IO.FileInfo(filename).Length; // записанно байт
+                // TODO 
+                if (cl.sizecomplite == cl.size) service.DeleteFileForDownload(cl);
+                else
+                    service.UpdateFileForDownload(cl);
 
                 DispachLog("FINNALY ListenerAcceptInTask");
             }
         }
 
+        /// <summary>
+        /// Колбэк на отрправителе
+        /// </summary>
+        /// <param name="cl"></param>
         private void Callback_TcpListenerAccept(ClientContract cl)
         {
             // 

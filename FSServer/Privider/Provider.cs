@@ -178,6 +178,19 @@ namespace FSServer.Privider
             }
         }
 
+        // DeleteFileForDownload
+        public void DeleteFileForDownload(ClientContract cl)
+        {
+            using (var con = Connect())
+            {
+                string myInsertQuery = "DELETE FROM `filefordownload` WHERE";
+                myInsertQuery += string.Format("`id` = {0}", cl.id);
+                var cmd = new MySqlCommand(myInsertQuery, con);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
 
         public int GetIdByName(string _name)
         {

@@ -165,6 +165,12 @@ namespace FSServer.Service
             prov.UpdateFileForDownload(cl);
         }
 
+        public void DeleteFileForDownload(ClientContract cl)
+        {
+            var prov = new Provider();
+            prov.DeleteFileForDownload(cl);
+        }
+
         public void SendMessageToChat(int _id, string _message)
         {
             var prov = new Provider();

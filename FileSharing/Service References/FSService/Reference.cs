@@ -341,6 +341,12 @@ namespace FileSharing.FSService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/UpdateFileForDownload", ReplyAction="http://tempuri.org/IFSService/UpdateFileForDownloadResponse")]
         System.Threading.Tasks.Task UpdateFileForDownloadAsync(FileSharing.FSService.ClientContract cl);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/DeleteFileForDownload", ReplyAction="http://tempuri.org/IFSService/DeleteFileForDownloadResponse")]
+        void DeleteFileForDownload(FileSharing.FSService.ClientContract cl);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IFSService/DeleteFileForDownload", ReplyAction="http://tempuri.org/IFSService/DeleteFileForDownloadResponse")]
+        System.Threading.Tasks.Task DeleteFileForDownloadAsync(FileSharing.FSService.ClientContract cl);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -489,6 +495,14 @@ namespace FileSharing.FSService {
         
         public System.Threading.Tasks.Task UpdateFileForDownloadAsync(FileSharing.FSService.ClientContract cl) {
             return base.Channel.UpdateFileForDownloadAsync(cl);
+        }
+        
+        public void DeleteFileForDownload(FileSharing.FSService.ClientContract cl) {
+            base.Channel.DeleteFileForDownload(cl);
+        }
+        
+        public System.Threading.Tasks.Task DeleteFileForDownloadAsync(FileSharing.FSService.ClientContract cl) {
+            return base.Channel.DeleteFileForDownloadAsync(cl);
         }
     }
 }

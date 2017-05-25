@@ -121,6 +121,12 @@
   <wsdl:message name="IFSService_UpdateFileForDownload_OutputMessage">
     <wsdl:part name="parameters" element="tns:UpdateFileForDownloadResponse" />
   </wsdl:message>
+  <wsdl:message name="IFSService_DeleteFileForDownload_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteFileForDownload" />
+  </wsdl:message>
+  <wsdl:message name="IFSService_DeleteFileForDownload_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteFileForDownloadResponse" />
+  </wsdl:message>
   <wsdl:message name="IFSService_UpdateClientList_OutputCallbackMessage">
     <wsdl:part name="parameters" element="tns:UpdateClientList" />
   </wsdl:message>
@@ -188,6 +194,10 @@
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateFileForDownload">
       <wsdl:input wsaw:Action="http://tempuri.org/IFSService/UpdateFileForDownload" message="tns:IFSService_UpdateFileForDownload_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IFSService/UpdateFileForDownloadResponse" message="tns:IFSService_UpdateFileForDownload_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeleteFileForDownload">
+      <wsdl:input wsaw:Action="http://tempuri.org/IFSService/DeleteFileForDownload" message="tns:IFSService_DeleteFileForDownload_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IFSService/DeleteFileForDownloadResponse" message="tns:IFSService_DeleteFileForDownload_OutputMessage" />
     </wsdl:operation>
     <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateClientList">
       <wsdl:output wsaw:Action="http://tempuri.org/IFSService/UpdateClientList" message="tns:IFSService_UpdateClientList_OutputCallbackMessage" />
@@ -317,6 +327,15 @@
     </wsdl:operation>
     <wsdl:operation name="UpdateFileForDownload">
       <soap12:operation soapAction="http://tempuri.org/IFSService/UpdateFileForDownload" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteFileForDownload">
+      <soap12:operation soapAction="http://tempuri.org/IFSService/DeleteFileForDownload" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

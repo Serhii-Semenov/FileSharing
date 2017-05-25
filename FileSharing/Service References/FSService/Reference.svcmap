@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="2b411ffb-6adb-4cc4-af0f-1e4bc2651da2" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="13d83315-9cd4-4f2c-a1db-c7079912a535" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,13 +22,13 @@
     <MetadataSource Address="net.tcp://localhost:42042/FSServer/ServiceFS/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="66321935-4a93-4e8e-98a1-cac4d7651b21" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="60a2c181-67c1-49dd-9633-2cb2d2d187eb" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="9e5eb44d-6dff-4cb4-ad82-d7093898b5b6" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="FSServer.Model.xsd" MetadataType="Schema" ID="ada537e5-da52-4ea0-9236-eb59ae9fa10c" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="4bb6e7c0-d788-4aab-9185-1e74fb91c294" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="System.Net.xsd" MetadataType="Schema" ID="e79d8949-b37a-4938-b28a-b083822ac017" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
-    <MetadataFile FileName="System.Net.Sockets.xsd" MetadataType="Schema" ID="c9f9ac5e-ffc5-457e-830b-395f029ff01d" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="e75828db-5494-4e16-a3da-ff03e478b530" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="ac6cad9e-30ea-4c05-b91b-ed26bce51f37" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="475408eb-7d1c-44ab-af98-b31ba87abf08" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="FSServer.Model.xsd" MetadataType="Schema" ID="e02573b5-522a-43fe-9f1c-707f269f8ac9" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="d51d0689-403a-4279-a840-6bed4410b4b4" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="System.Net.xsd" MetadataType="Schema" ID="0052bf39-eeb1-411a-9b10-9e7c24e0e458" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
+    <MetadataFile FileName="System.Net.Sockets.xsd" MetadataType="Schema" ID="12f3d4e9-be95-4d16-9f71-9676c110ca43" SourceId="1" SourceUrl="net.tcp://localhost:42042/FSServer/ServiceFS/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

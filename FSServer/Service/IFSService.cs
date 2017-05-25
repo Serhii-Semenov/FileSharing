@@ -58,5 +58,9 @@ namespace FSServer.Service
 
         [OperationContract]
         void UpdateFileForDownload(ClientContract cl);
+
+        [OperationContract]
+        void DeleteFileForDownload(ClientContract cl);
+
     }
 }
